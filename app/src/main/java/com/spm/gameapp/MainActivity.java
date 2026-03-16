@@ -17,7 +17,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         //enllaçar la toolbar
-        // Usa el ID que pusimos DENTRO de toolbar.xmlToolbar myToolbar = findViewById(R.id.my_toolbar);
         Toolbar myToolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
 
