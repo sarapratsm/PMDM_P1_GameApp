@@ -20,7 +20,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.spm.gameapp.R;
-import com.spm.gameapp.core.enums.*;
+import com.spm.gameapp.utils.enums.*;
 import com.spm.gameapp.db.AppDatabase;
 import com.spm.gameapp.repository.GameRepository;
 import com.spm.gameapp.ui.adapter.GameAdapter;

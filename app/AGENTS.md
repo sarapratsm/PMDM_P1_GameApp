@@ -7,6 +7,8 @@ Llenguatge: Català
 
 Context de Gradle: Abans de suggerir una llibreria nova, verifica el fitxer libs.versions.toml (Version Catalog).
 
+Documenta tot el codi per a que s'entengui què fa cada mètode i per a què serveix cada classe.
+
 
 ---
 
