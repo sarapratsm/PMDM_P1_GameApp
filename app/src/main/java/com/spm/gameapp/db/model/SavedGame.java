@@ -12,5 +12,33 @@ public class SavedGame {
     private String title;
     private String imgUrl;
 
+    public SavedGame(int gameId, String title, String imgUrl) {
+        this.gameId = gameId;
+        this.title = title;
+        this.imgUrl = imgUrl;
+    }
 
+    public int getGameId() {
+        return gameId;
+    }
+
+    public void setGameId(int gameId) {
+        this.gameId = gameId;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getImgUrl() {
+        return imgUrl;
+    }
+
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
+    }
 }

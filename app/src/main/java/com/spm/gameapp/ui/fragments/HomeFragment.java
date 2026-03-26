@@ -91,7 +91,9 @@ public class HomeFragment extends Fragment {
                 PlatformValue platform = (PlatformValue) spnrPlatform.getSelectedItem();
 
                 // Avisem al ViewModel que carregui amb els nous filtres
-                viewModel.loadGames(order.getApiValue(), platform.getApiValue());
+                if (order != null && platform != null) {
+                    viewModel.loadGames(order.getValue(), platform.getValue());
+                }
             }
 
             @Override
@@ -106,20 +108,20 @@ public class HomeFragment extends Fragment {
         viewModel.getGamesState().observe(getViewLifecycleOwner(), state -> {
             if (state == null) return;
 
-            switch (state.getStatus()) {
+            switch (state.status) {
                 case LOADING:
                     // TODO: Mostrar ProgressBar
                     Log.d(TAG, "observeViewModel: Carregant jocs...");
                     break;
                 case SUCCESS:
                     // TODO: Amagar ProgressBar
-                    if (state.getData() != null) {
-                        adapter.setGames(state.getData());
+                    if (state.data != null) {
+                        adapter.setGames(state.data);
                     }
                     break;
                 case ERROR:
                     // TODO: Amagar ProgressBar i mostrar error (Toast/Snackbar)
-                    Log.e(TAG, "observeViewModel: Error carregant jocs", state.getError());
+                    Log.e(TAG, "observeViewModel: Error carregant jocs", state.error);
                     break;
             }
         });

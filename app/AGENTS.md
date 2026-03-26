@@ -127,3 +127,15 @@ app/src/m
 ├── adapter/              # GameAdapter (RecyclerView)
 └── utils/                # NetworkUtils, ExcelExporter
 ```
+
+## dependencies de preferencia
+    implementation("androidx.lifecycle:lifecycle-extensions:2.1.0")
+
+    implementation("androidx.fragment:fragment:${fragment_version}")
+
+
+    dependencies {
+        // For Kotlin use navigation-fragment-ktx, for Java use navigation-fragment
+        implementation("androidx.navigation:navigation-fragment:2.8.8")
+        implementation("androidx.navigation:navigation-ui:2.8.8")
+    }
