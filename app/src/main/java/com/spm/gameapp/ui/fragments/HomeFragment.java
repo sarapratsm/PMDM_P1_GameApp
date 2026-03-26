@@ -20,6 +20,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.spm.gameapp.R;
 import com.spm.gameapp.core.enums.*;
+import com.spm.gameapp.db.AppDatabase;
+import com.spm.gameapp.repository.GameRepository;
 import com.spm.gameapp.ui.adapter.GameAdapter;
 import com.spm.gameapp.viewmodel.*;
 
@@ -47,8 +49,12 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         
-        // 1. Inicialitzar ViewModel
-        viewModel = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
+        // 1. Inicialitzar ViewModel amb Factory
+        AppDatabase db = AppDatabase.getInstance(requireContext());
+        GameRepository repository = new GameRepository(db.savedGameDao());
+        ViewModelFactory factory = new ViewModelFactory(repository);
+        
+        viewModel = new ViewModelProvider(requireActivity(), factory).get(HomeViewModel.class);
 
         // 2. Inicialitzar components de la UI
         setupUI(view);
