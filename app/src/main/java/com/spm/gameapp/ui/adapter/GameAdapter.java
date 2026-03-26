@@ -23,8 +23,17 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
 
     private static final String TAG = "GameAdapter";
     private List<Game> games = new ArrayList<>();
+    private OnGameClickListener listener;
+
+    public interface OnGameClickListener {
+        void onGameClick(Game game);
+    }
 
     public GameAdapter() {
+    }
+
+    public void setOnGameClickListener(OnGameClickListener listener) {
+        this.listener = listener;
     }
 
     public void setGames(List<Game> games) {
@@ -62,6 +71,13 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
             imgGame = itemView.findViewById(R.id.img_game);
             txtTitle = itemView.findViewById(R.id.txt_title);
             llPlatforms = itemView.findViewById(R.id.ll_platforms);
+
+            itemView.setOnClickListener(v -> {
+                int position = getAdapterPosition();
+                if (listener != null && position != RecyclerView.NO_POSITION) {
+                    listener.onGameClick(games.get(position));
+                }
+            });
         }
 
         public void bind(Game game) {

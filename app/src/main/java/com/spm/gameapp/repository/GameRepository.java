@@ -2,6 +2,7 @@ package com.spm.gameapp.repository;
 
 import com.spm.gameapp.api.GameApi;
 import com.spm.gameapp.api.GameApiService;
+import com.spm.gameapp.api.model.Game;
 import com.spm.gameapp.api.model.GameList;
 import com.spm.gameapp.db.dao.SavedGameDao;
 
@@ -17,6 +18,14 @@ public class GameRepository {
     }
 
     public Call<GameList> getGames(String ordering, String platforms) {
-        return apiService.getGames(GameApi.API_KEY, 20, ordering, platforms);
+        // RAWG API prefereix null en comptes de cadenes buides per a no filtrar
+        String ord = (ordering == null || ordering.isEmpty()) ? null : ordering;
+        String plat = (platforms == null || platforms.isEmpty()) ? null : platforms;
+        
+        return apiService.getGames(GameApi.API_KEY, 20, ord, plat);
+    }
+
+    public Call<Game> getGameDetail(int gameId) {
+        return apiService.getGameDetail(gameId, GameApi.API_KEY);
     }
 }

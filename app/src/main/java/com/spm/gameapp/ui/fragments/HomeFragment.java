@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -60,13 +61,18 @@ public class HomeFragment extends Fragment {
         setupUI(view);
         
         // 3. Configurar el RecyclerView
-        setupRecyclerView();
+        setupRecyclerView(view);
 
         // 4. Listeners per als filtres (Spinners)
         setupListeners();
         
         // 5. Observar dades del ViewModel
         observeViewModel();
+        
+        // Càrrega inicial si és necessari
+        if (viewModel.getGamesState().getValue() == null) {
+            viewModel.loadGames(null, null);
+        }
         
         Log.d(TAG, "onViewCreated: Fragment preparat i observant el ViewModel.");
     }
@@ -81,11 +87,19 @@ public class HomeFragment extends Fragment {
         spnrPlatform.setAdapter(new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, PlatformValue.values()));
     }
 
-    private void setupRecyclerView() {
+    private void setupRecyclerView(View view) {
         int spanCount = getResources().getConfiguration().orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE ? 3 : 2;
         rvGames.setLayoutManager(new GridLayoutManager(getContext(), spanCount));
         
         adapter = new GameAdapter();
+        
+        // Configurar el click per navegar al detall
+        adapter.setOnGameClickListener(game -> {
+            Bundle args = new Bundle();
+            args.putInt("gameId", game.getId());
+            Navigation.findNavController(view).navigate(R.id.action_homeFragment_to_gameDetailFragment, args);
+        });
+        
         rvGames.setAdapter(adapter);
     }
 
@@ -116,17 +130,14 @@ public class HomeFragment extends Fragment {
 
             switch (state.status) {
                 case LOADING:
-                    // TODO: Mostrar ProgressBar
                     Log.d(TAG, "observeViewModel: Carregant jocs...");
                     break;
                 case SUCCESS:
-                    // TODO: Amagar ProgressBar
                     if (state.data != null) {
                         adapter.setGames(state.data);
                     }
                     break;
                 case ERROR:
-                    // TODO: Amagar ProgressBar i mostrar error (Toast/Snackbar)
                     Log.e(TAG, "observeViewModel: Error carregant jocs", state.error);
                     break;
             }

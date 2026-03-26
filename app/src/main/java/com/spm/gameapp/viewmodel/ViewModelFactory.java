@@ -19,6 +19,8 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
         if (modelClass.isAssignableFrom(HomeViewModel.class)) {
             return (T) new HomeViewModel(repository);
+        } else if (modelClass.isAssignableFrom(GameDetailViewModel.class)) {
+            return (T) new GameDetailViewModel(repository);
         }
         // Pots afegir altres ViewModels aquí si comparteixen el repositori
         throw new IllegalArgumentException("Unknown ViewModel class: " + modelClass.getName());
