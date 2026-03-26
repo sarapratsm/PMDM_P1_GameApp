@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">PMDM_P1_GameApp</string>
+    <string name="home">home\n</string>
+    <string name="mygames">mygames\n</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="navigation_drawer_open">Open Navigation\n</string>
+    <string name="navigation_drawer_close">Close Navigation</string>
 </resources>

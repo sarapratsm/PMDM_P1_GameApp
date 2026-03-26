@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"> <!-- Añadimos el namespace 'app' -->
+
+    <item
+        android:id="@+id/home"
+        android:title="@string/home"
+        android:icon="@drawable/home"
+        app:showAsAction="ifRoom" /> <!-- Para que se vea el icono en la toolbar -->
+
+    <item
+        android:id="@+id/mygames"
+        android:title="@string/mygames"
+        android:icon="@drawable/mygames"
+        app:showAsAction="ifRoom" />
+
+</menu>
