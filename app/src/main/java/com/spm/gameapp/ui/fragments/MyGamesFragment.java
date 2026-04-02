@@ -6,21 +6,39 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.spm.gameapp.R;
+import com.spm.gameapp.db.AppDatabase;
+import com.spm.gameapp.repository.GameRepository;
 import com.spm.gameapp.viewmodel.MySavedGamesViewModel;
+import com.spm.gameapp.viewmodel.ViewModelFactory;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class MyGamesFragment extends Fragment {
 
+    private static final String TAG = "MyGamesFragment";
+
+    // Components de la interfície d'usuari (titol, botó...)
+    private TextView txtMyGames;
+    private ImageButton btnShare;
+    private RecyclerView rvMyGames;
+
+
+    // Lògica de negoci i dades
     private MySavedGamesViewModel viewModel;
 
+    /**
+     * Constructor buit obligatori per a fragments.
+     */
     public MyGamesFragment() {
         // Required empty public constructor
     }
@@ -35,6 +53,30 @@ public class MyGamesFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        // 1. Inicialitzar ViewModel amb la Factory per permetre la injecció del Repositori
+        AppDatabase db = AppDatabase.getInstance(requireContext());
+        GameRepository repository = new GameRepository(db.savedGameDao());
+        ViewModelFactory factory = new ViewModelFactory(repository);
+
+        // requireActivity() s'usa si volem que el ViewModel es comparteixi a nivell d'Activity,
+        // altrament s'usaria 'this' per un ViewModel propi del Fragment.
         viewModel = new ViewModelProvider(this).get(MySavedGamesViewModel.class);
+
+        //2. Inicialitzar components de la UI (referències a vistes)
+        txtMyGames = view.findViewById(R.id.txt_mygames);
+        btnShare = view.findViewById(R.id.btn_share);
+        rvMyGames = view.findViewById(R.id.rv_mygames);
+
+        //3. Observar canvis en l'estat de les dades al ViewModel
+        observeViewModel();
+
+        //4. Realitzar una càrrega inicial si l'estat actual és buit
+        if (viewModel.getGamesState().getValue() == null) {
+            viewModel.loadGames();
+        }
+    }
+
+    private void observeViewModel() {
     }
 }

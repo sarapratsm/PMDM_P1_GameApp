@@ -11,9 +11,17 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+/*
+ *Funció: Obtenir la informació detallada d'un joc específic
+ * (sovint una altra crida a l'API) i gestionar la interacció
+ * de l'usuari amb la pantalla de detall del joc.
+ * Responsabilitats: Controlar el carrusel d'imatges
+ * i fer el pont per desar el joc a la base de dades local (Room)
+ * quan l'usuari prem el botó "+".*/
 public class GameDetailViewModel extends ViewModel {
 
     private final GameRepository repository;
+    // LiveData que el Fragment observarà
     private final MutableLiveData<UiState<Game>> gameState = new MutableLiveData<>();
 
     public GameDetailViewModel(GameRepository repository) {

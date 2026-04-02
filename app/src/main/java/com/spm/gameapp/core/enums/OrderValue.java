@@ -1,5 +1,6 @@
 package com.spm.gameapp.core.enums;
 
+/*Usats per ordenar els jocs*/
 public enum OrderValue {
     DEFAULT("", "Per defecte"),
     RATING("-rating", "Puntuació"),

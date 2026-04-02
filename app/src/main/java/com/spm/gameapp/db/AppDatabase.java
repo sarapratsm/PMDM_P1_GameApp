@@ -9,6 +9,8 @@ import androidx.room.RoomDatabase;
 import com.spm.gameapp.db.dao.SavedGameDao;
 import com.spm.gameapp.db.model.SavedGame;
 
+import java.util.List;
+
 @Database(entities = {SavedGame.class}, version = 1, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
     public abstract SavedGameDao savedGameDao();
@@ -29,4 +31,7 @@ public abstract class AppDatabase extends RoomDatabase {
         }
         return INSTANCE;
     }
+
+
+
 }

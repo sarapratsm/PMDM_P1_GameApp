@@ -18,6 +18,7 @@ import com.spm.gameapp.api.model.ParentPlatform;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder> {
 
@@ -64,12 +65,14 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
 
         private final ImageView imgGame;
         private final TextView txtTitle;
+        private final TextView txtRating;
         private final LinearLayout llPlatforms;
 
         public GameViewHolder(@NonNull View itemView) {
             super(itemView);
             imgGame = itemView.findViewById(R.id.img_game);
             txtTitle = itemView.findViewById(R.id.txt_title);
+            txtRating = itemView.findViewById(R.id.txt_rating);
             llPlatforms = itemView.findViewById(R.id.ll_platforms);
 
             itemView.setOnClickListener(v -> {
@@ -82,11 +85,19 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
 
         public void bind(Game game) {
             txtTitle.setText(game.getName());
+            
+            if (game.getRating() != null) {
+                txtRating.setText(String.format(Locale.getDefault(), "%.1f", game.getRating()));
+                txtRating.setVisibility(View.VISIBLE);
+            } else {
+                txtRating.setVisibility(View.GONE);
+            }
 
             // Carregar imatge amb Glide
             Glide.with(itemView.getContext())
                     .load(game.getBackgroundImage())
                     .placeholder(R.drawable.gameapp)
+                    .error(R.drawable.gameapp)
                     .centerCrop()
                     .into(imgGame);
 
@@ -99,10 +110,12 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
                     if (iconRes != 0) {
                         icon.setImageResource(iconRes);
                         
-                        // Ajustar mida de la icona
-                        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(40, 40);
-                        params.setMargins(0, 0, 8, 0);
+                        // Ajustar mida de la icona (més petita i estilitzada)
+                        int size = (int) (16 * itemView.getContext().getResources().getDisplayMetrics().density);
+                        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(size, size);
+                        params.setMargins(0, 0, 12, 0);
                         icon.setLayoutParams(params);
+                        icon.setAlpha(0.7f); // Subtilment transparent
                         
                         llPlatforms.addView(icon);
                     }
@@ -112,15 +125,12 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
 
         private int getPlatformIcon(String slug) {
             switch (slug) {
-                case "pc": return R.drawable.windows;
-                case "playstation": return R.drawable.playstation;
-                case "xbox": return R.drawable.xbox;
-                case "nintendo": return R.drawable.nintendo;
-                case "mac": return R.drawable.mac;
-                case "linux": return R.drawable.linux;
-                case "android": return R.drawable.android;
-                case "ios": return R.drawable.ios;
-                default: return 0;
+                case "pc": return R.id.homeFragment; // Temporary mapping or real drawable
+                // In a real project, use real drawable resources like R.drawable.ic_windows
+                default: 
+                    // Fallback to check if drawable exists with same name as slug
+                    int resId = itemView.getContext().getResources().getIdentifier(slug, "drawable", itemView.getContext().getPackageName());
+                    return resId != 0 ? resId : 0;
             }
         }
     }

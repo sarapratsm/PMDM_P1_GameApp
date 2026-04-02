@@ -15,11 +15,15 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 /**
- * Per gestionar la cerca de jocs a la API de RAWG i els filtres de la pantalla principal.
+ * ViewModel per a la pantalla d'inici (HomeFragment).
+ * Funció: Cridar a l'API de RAWG per obtenir la llista de jocs.
+ * Responsabilitats: Gestionar l'estat de la llista (càrrega, error, èxit), aplicar l'ordre
+ * (per exemple, per "Average rating") i filtrar per plataforma (PC, PS4, etc.).
  */
 public class HomeViewModel extends ViewModel {
 
     private final GameRepository repository;
+    // LiveData per a l'estat de càrrega i resultats
     private final MutableLiveData<UiState<List<Game>>> gamesState = new MutableLiveData<>();
 
     public HomeViewModel(GameRepository repository) {

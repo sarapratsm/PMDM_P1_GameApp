@@ -4,53 +4,152 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#121212"
     tools:context=".ui.fragments.GameDetailFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:paddingBottom="32dp">
 
+        <!-- 1. Imatge de Capçalera amb Gradient -->
         <ImageView
             android:id="@+id/img_detail"
             android:layout_width="match_parent"
-            android:layout_height="250dp"
+            android:layout_height="350dp"
             android:scaleType="centerCrop"
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@drawable/gameapp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:background="@drawable/gradient_overlay"
+            app:layout_constraintBottom_toBottomOf="@id/img_detail" />
 
         <ProgressBar
             android:id="@+id/progress_detail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
+            android:indeterminateTint="@android:color/white"
             app:layout_constraintBottom_toBottomOf="@id/img_detail"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/img_detail" />
 
+        <!-- 2. Títol del Joc (Sobre la imatge o just a sota) -->
         <TextView
             android:id="@+id/txt_detail_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:textSize="24sp"
+            android:layout_margin="20dp"
+            android:textColor="@android:color/white"
+            android:textSize="32sp"
             android:textStyle="bold"
+            android:shadowColor="#80000000"
+            android:shadowDx="2"
+            android:shadowDy="2"
+            android:shadowRadius="4"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/img_detail"
-            tools:text="Game Title" />
+            tools:text="Cyberpunk 2077" />
+
+        <!-- 3. Secció d'Acció i Stats -->
+        <LinearLayout
+            android:id="@+id/ll_stats"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            app:layout_constraintTop_toBottomOf="@+id/txt_detail_title">
+
+            <TextView
+                android:id="@+id/txt_exceptional"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rating_badge"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="4dp"
+                android:text="@string/exceptional"
+                android:textColor="#000000"
+                android:textStyle="bold"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnAddMyGames"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_margin="20dp"
+            android:text="Afegir a la col·lecció"
+            android:textAllCaps="false"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:cornerRadius="16dp"
+            app:icon="@android:drawable/ic_input_add"
+            app:iconGravity="textStart"
+            app:backgroundTint="#333333"
+            android:textColor="@android:color/white"
+            app:layout_constraintTop_toBottomOf="@+id/ll_stats" />
+
+        <!-- 4. Descripció -->
+        <TextView
+            android:id="@+id/label_about"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="24dp"
+            android:text="Sobre el joc"
+            android:textColor="#888888"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textAllCaps="true"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btnAddMyGames" />
 
         <TextView
             android:id="@+id/txt_detail_description"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="8dp"
+            android:lineSpacingExtra="6dp"
+            android:textColor="#CCCCCC"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/txt_detail_title"
-            tools:text="Game description goes here..." />
+            app:layout_constraintTop_toBottomOf="@id/label_about"
+            tools:text="Endinsa't en el futur fosc de Night City..." />
+
+        <!-- 5. Galeria de Screenshots -->
+        <TextView
+            android:id="@+id/label_gallery"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="32dp"
+            android:text="Captures de pantalla"
+            android:textColor="#888888"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textAllCaps="true"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txt_detail_description" />
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/vp_carrousel"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:layout_marginTop="16dp"
+            android:clipToPadding="false"
+            android:clipChildren="false"
+            app:layout_constraintTop_toBottomOf="@id/label_gallery"
+            app:layout_constraintBottom_toBottomOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </androidx.core.widget.NestedScrollView>

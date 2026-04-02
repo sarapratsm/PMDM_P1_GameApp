@@ -1,9 +1,12 @@
 <resources>
     <string name="app_name">PMDM_P1_GameApp</string>
-    <string name="home">home\n</string>
-    <string name="mygames">mygames\n</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="navigation_drawer_open">Open Navigation\n</string>
-    <string name="navigation_drawer_close">Close Navigation</string>
+    <string name="home">Inici</string>
+    <string name="my_games">My Games</string>
+    <string name="navigation_drawer_open">Obrir navegació</string>
+    <string name="navigation_drawer_close">Tancar navegació</string>
+
+    <!-- Prefixos per als Spinners -->
+    <string name="order_by_prefix">Order by: %1$s</string>
+    <string name="platform_prefix">Platform: %1$s</string>
+    <string name="exceptional">Exceptional 🎯</string>
 </resources>
