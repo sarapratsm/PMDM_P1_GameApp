@@ -9,4 +9,5 @@
     <string name="order_by_prefix">Order by: %1$s</string>
     <string name="platform_prefix">Platform: %1$s</string>
     <string name="exceptional">Exceptional 🎯</string>
+    <string name="share">Share</string>
 </resources>

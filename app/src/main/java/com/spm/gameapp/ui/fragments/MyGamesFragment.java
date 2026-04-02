@@ -59,12 +59,11 @@ public class MyGamesFragment extends Fragment {
         GameRepository repository = new GameRepository(db.savedGameDao());
         ViewModelFactory factory = new ViewModelFactory(repository);
 
-        // requireActivity() s'usa si volem que el ViewModel es comparteixi a nivell d'Activity,
-        // altrament s'usaria 'this' per un ViewModel propi del Fragment.
-        viewModel = new ViewModelProvider(this).get(MySavedGamesViewModel.class);
+        // Corregit: Cal passar la factory per crear el ViewModel que té un constructor amb paràmetres
+        viewModel = new ViewModelProvider(this, factory).get(MySavedGamesViewModel.class);
 
         //2. Inicialitzar components de la UI (referències a vistes)
-        txtMyGames = view.findViewById(R.id.txt_mygames);
+        txtMyGames = view.findViewById(R.id.txt_mygames_title);
         btnShare = view.findViewById(R.id.btn_share);
         rvMyGames = view.findViewById(R.id.rv_mygames);
 
@@ -78,5 +77,6 @@ public class MyGamesFragment extends Fragment {
     }
 
     private void observeViewModel() {
+        // TODO: Implementar l'observació del LiveData per mostrar els jocs desats
     }
 }

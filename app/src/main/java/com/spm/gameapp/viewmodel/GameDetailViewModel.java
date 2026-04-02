@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.spm.gameapp.api.model.Game;
+import com.spm.gameapp.db.model.SavedGame;
 import com.spm.gameapp.repository.GameRepository;
 
 import retrofit2.Call;
@@ -48,6 +49,12 @@ public class GameDetailViewModel extends ViewModel {
             public void onFailure(Call<Game> call, Throwable t) {
                 gameState.setValue(UiState.error(t));
             }
+        });
+    }
+
+    public void saveGame(SavedGame savedGame) {
+        repository.saveGame(savedGame, () -> {
+            //Runnable buit
         });
     }
 }

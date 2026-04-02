@@ -97,6 +97,30 @@ public class Game {
     @Expose
     private List<ShortScreenshot> shortScreenshots;
 
+    @SerializedName("description")
+    @Expose
+    private String description;
+
+    @SerializedName("description_raw")
+    @Expose
+    private String descriptionRaw;
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getDescriptionRaw() {
+        return descriptionRaw;
+    }
+
+    public void setDescriptionRaw(String descriptionRaw) {
+        this.descriptionRaw = descriptionRaw;
+    }
+
     public Integer getId() {
         return id;
     }
@@ -456,5 +480,6 @@ public class Game {
         }
         return sb.toString();
     }
+
 
 }
