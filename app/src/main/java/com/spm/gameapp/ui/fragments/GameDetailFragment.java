@@ -112,7 +112,7 @@ public class GameDetailFragment extends Fragment {
     private void setupViewModel() {
         // Obtenim la instància de la base de dades per al repositori
         AppDatabase db = AppDatabase.getInstance(requireContext());
-        GameRepository repository = new GameRepository(db.savedGameDao());
+        GameRepository repository = new GameRepository(db.savedGameDao(), db.gameEntryDao());
 
         // Usem la factoria que ja tenim definida
         ViewModelFactory factory = new ViewModelFactory(repository);

@@ -56,7 +56,7 @@ public class MyGamesFragment extends Fragment {
 
         // 1. Inicialitzar ViewModel amb la Factory per permetre la injecció del Repositori
         AppDatabase db = AppDatabase.getInstance(requireContext());
-        GameRepository repository = new GameRepository(db.savedGameDao());
+        GameRepository repository = new GameRepository(db.savedGameDao(), db.gameEntryDao());
         ViewModelFactory factory = new ViewModelFactory(repository);
 
         // Corregit: Cal passar la factory per crear el ViewModel que té un constructor amb paràmetres
@@ -65,7 +65,11 @@ public class MyGamesFragment extends Fragment {
         //2. Inicialitzar components de la UI (referències a vistes)
         txtMyGames = view.findViewById(R.id.txt_mygames_title);
         btnShare = view.findViewById(R.id.btn_share);
-        rvMyGames = view.findViewById(R.id.rv_mygames);
+        //list_container
+        rvMyGames = view.findViewById(R.id.list_container);
+        //blog_container
+        rvMyGames = view.findViewById(R.id.blog_container);
+
 
         //3. Observar canvis en l'estat de les dades al ViewModel
         observeViewModel();
@@ -77,6 +81,13 @@ public class MyGamesFragment extends Fragment {
     }
 
     private void observeViewModel() {
-        // TODO: Implementar l'observació del LiveData per mostrar els jocs desats
+        viewModel.getGamesState().observe(getViewLifecycleOwner(), state -> {
+            if (state == null) return;
+        });
+        //TODO: Mostrar els jocs desats
+        //TODO: Mostrar el blog
+
+
+
     }
 }

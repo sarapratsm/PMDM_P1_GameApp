@@ -1,22 +1,15 @@
 package com.spm.gameapp.viewmodel;
 
-import static android.content.ContentValues.TAG;
-
 import android.util.Log;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.spm.gameapp.api.model.Game;
-import com.spm.gameapp.core.enums.OrderValue;
 import com.spm.gameapp.db.model.SavedGame;
 import com.spm.gameapp.repository.GameRepository;
 
 import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 /**
  * Per gestionar la persistència amb Room (afegir/eliminar preferits i el blog).
@@ -34,6 +27,9 @@ public class MySavedGamesViewModel  extends ViewModel {
     // 2. L'estat de la pantalla (Llista de jocs desats)
     private final MutableLiveData<UiState<List<SavedGame>>> gamesState = new MutableLiveData<>();
 
+    private final MutableLiveData<SavedGame> selectedGame = new MutableLiveData<>();
+
+
     // Constructor
     public MySavedGamesViewModel(GameRepository repository) {
         this.repository = repository;
@@ -44,17 +40,14 @@ public class MySavedGamesViewModel  extends ViewModel {
         return gamesState;
     }
 
+
     // Funció per a carregar els jocs desats
     public void loadGames() {
         gamesState.setValue(UiState.loading());
         //demanar dades al repository
         repository.getAllSavedGames(new GameRepository.RepositoryCallback<List<SavedGame>>() {
 
-            @Override
-            public void onComplete(List<SavedGame> result) {
-                gamesState.setValue(UiState.success(result));
-                Log.d(TAG, "onComplete: " + result.size());
-            }
+
             @Override
             public void onError(Throwable t) {
                 Log.e(TAG, "onError: " + t.getMessage());
@@ -67,6 +60,14 @@ public class MySavedGamesViewModel  extends ViewModel {
                 Log.d(TAG, "onLoaded: " + games.size());
             }
         });
+    }
+
+    public void selectGame(SavedGame game) {
+        selectedGame.setValue(game);
+    }
+
+    public LiveData<SavedGame> getSelectedGame() {
+        return selectedGame;
     }
 
 

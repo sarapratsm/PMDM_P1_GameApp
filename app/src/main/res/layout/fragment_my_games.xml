@@ -1,21 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#121212"
-    tools:context=".ui.fragments.MyGamesFragment">
+    android:background="#121212">
 
+    <!-- Header: Títol i Botó Share -->
     <TextView
         android:id="@+id/txt_mygames_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:text="@string/my_games"
-        android:textColor="@android:color/white"
-        android:textSize="24sp"
+        android:textColor="@color/white"
+        android:textSize="28sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -24,44 +23,47 @@
         android:id="@+id/btn_share"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_margin="16dp"
+        android:layout_marginEnd="16dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:src="@drawable/share"
-        android:scaleType="fitXY"
-        android:padding="7dp"
-        android:contentDescription="@string/share"
+        app:layout_constraintBottom_toBottomOf="@id/txt_mygames_title"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:tint="@android:color/white" />
+        app:layout_constraintTop_toTopOf="@id/txt_mygames_title"
+        app:tint="@color/white" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_mygames"
-        android:layout_width="0dp"
+    <!-- Contenidor per als dos fragments -->
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
+        android:baselineAligned="false"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/guideline_vertical"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txt_mygames_title"
-        tools:listitem="@android:layout/simple_list_item_1" />
+        app:layout_constraintTop_toBottomOf="@id/txt_mygames_title">
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_vertical"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.4" />
+        <!-- Zona Llista (Esquerra) -->
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/list_container"
+            android:name="com.spm.gameapp.ui.fragments.MyGamesListFragment"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            tools:layout="@layout/fragment_my_games_list" />
 
-    <FrameLayout
-        android:id="@+id/container_blog"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="#1A1A1A"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/guideline_vertical"
-        app:layout_constraintTop_toBottomOf="@id/btn_share">
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="#333333" />
 
-    </FrameLayout>
+        <!-- Zona Blog (Dreta) -->
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/blog_container"
+            android:name="com.spm.gameapp.ui.fragments.MyGamesBlogFragment"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.2"
+            tools:layout="@layout/fragment_my_games_blog" />
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

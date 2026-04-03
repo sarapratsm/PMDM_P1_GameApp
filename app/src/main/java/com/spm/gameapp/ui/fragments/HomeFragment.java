@@ -1,7 +1,5 @@
 package com.spm.gameapp.ui.fragments;
 
-import static com.spm.gameapp.viewmodel.UiState.Status.LOADING;
-
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -70,7 +68,7 @@ public class HomeFragment extends Fragment {
         
         // 1. Inicialitzar ViewModel amb la Factory per permetre la injecció del Repositori
         AppDatabase db = AppDatabase.getInstance(requireContext());
-        GameRepository repository = new GameRepository(db.savedGameDao());
+        GameRepository repository = new GameRepository(db.savedGameDao(), db.gameEntryDao());
         ViewModelFactory factory = new ViewModelFactory(repository);
         
         // requireActivity() s'usa si volem que el ViewModel es comparteixi a nivell d'Activity,
