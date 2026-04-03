@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentContainerView;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -30,7 +31,9 @@ public class MyGamesFragment extends Fragment {
     // Components de la interfície d'usuari (titol, botó...)
     private TextView txtMyGames;
     private ImageButton btnShare;
-    private RecyclerView rvMyGames;
+
+    private FragmentContainerView listContainer;
+    private FragmentContainerView blogContainer;
 
 
     // Lògica de negoci i dades
@@ -60,15 +63,15 @@ public class MyGamesFragment extends Fragment {
         ViewModelFactory factory = new ViewModelFactory(repository);
 
         // Corregit: Cal passar la factory per crear el ViewModel que té un constructor amb paràmetres
-        viewModel = new ViewModelProvider(this, factory).get(MySavedGamesViewModel.class);
+        viewModel = new ViewModelProvider(requireActivity(), factory).get(MySavedGamesViewModel.class);
 
         //2. Inicialitzar components de la UI (referències a vistes)
         txtMyGames = view.findViewById(R.id.txt_mygames_title);
         btnShare = view.findViewById(R.id.btn_share);
         //list_container
-        rvMyGames = view.findViewById(R.id.list_container);
+        listContainer = view.findViewById(R.id.list_container);
         //blog_container
-        rvMyGames = view.findViewById(R.id.blog_container);
+        blogContainer = view.findViewById(R.id.blog_container);
 
 
         //3. Observar canvis en l'estat de les dades al ViewModel
