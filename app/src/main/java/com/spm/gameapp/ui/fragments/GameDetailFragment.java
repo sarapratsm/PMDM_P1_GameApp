@@ -271,18 +271,24 @@ public class GameDetailFragment extends Fragment {
 
     private void setupRatings(List<Rating> ratings, int totalRatings) {
         if (cgRatingsBars == null || !isAdded() || getContext() == null) return;
-        cgRatingsBars.removeAllViews(); 
+        cgRatingsBars.removeAllViews();
 
         if (txtRatingCount != null) {
             txtRatingCount.setText(totalRatings + " RATINGS");
         }
 
         for (Rating rating : ratings) {
-            TextView tvRating = new TextView(requireContext());
+            // ERROR AQUÍ: Has de crear un Chip, no un TextView
+            Chip chip = new Chip(requireContext());
+
             String title = rating.getTitle().substring(0, 1).toUpperCase() + rating.getTitle().substring(1);
-            tvRating.setText(title + " " + rating.getCount());
-            tvRating.setTextColor(Color.WHITE);
-            tvRating.setPadding(0, 10, 0, 10);
+            chip.setText(title + " " + rating.getCount());
+            chip.setTextColor(Color.WHITE);
+
+            // Estil per a que sembli el del professor
+            chip.setChipBackgroundColorResource(android.R.color.transparent);
+            chip.setChipStrokeColorResource(android.R.color.darker_gray);
+            chip.setChipStrokeWidth(1f);
 
             int color;
             switch (rating.getTitle().toLowerCase()) {
@@ -293,9 +299,11 @@ public class GameDetailFragment extends Fragment {
                 default: color = Color.GRAY;
             }
 
-            tvRating.setCompoundDrawablesWithIntrinsicBounds(createCircle(color), null, null, null);
-            tvRating.setCompoundDrawablePadding(20);
-            cgRatingsBars.addView(tvRating);
+            // Usem setChipIcon en lloc de setCompoundDrawables
+            chip.setChipIcon(createCircle(color));
+            chip.setChipIconVisible(true);
+
+            cgRatingsBars.addView(chip); // Ara sí que són compatibles!
         }
     }
 

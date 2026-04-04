@@ -32,7 +32,7 @@ import com.spm.gameapp.viewmodel.*;
 public class HomeFragment extends Fragment {
 
     private static final String TAG = "HomeFragment";
-    
+
     // Components de la interfície d'usuari
     private Spinner spnrOrder;
     private Spinner spnrPlatform;
@@ -41,6 +41,7 @@ public class HomeFragment extends Fragment {
 
     // Lògica de negoci i dades
     private HomeViewModel viewModel;
+    private boolean isFirstSelection = true;
 
     /**
      * Constructor buit obligatori per a fragments.
@@ -55,6 +56,7 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.d(TAG, "onCreateView: Inflant layout");
         return inflater.inflate(R.layout.fragment_home, container, false);
     }
 
@@ -65,15 +67,19 @@ public class HomeFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        
+        Log.d(TAG, "onViewCreated: Iniciant configuració del fragment");
+
         // 1. Inicialitzar ViewModel amb la Factory per permetre la injecció del Repositori
-        AppDatabase db = AppDatabase.getInstance(requireContext());
-        GameRepository repository = new GameRepository(db.savedGameDao(), db.gameEntryDao());
-        ViewModelFactory factory = new ViewModelFactory(repository);
-        
-        // requireActivity() s'usa si volem que el ViewModel es comparteixi a nivell d'Activity,
-        // altrament s'usaria 'this' per un ViewModel propi del Fragment.
-        viewModel = new ViewModelProvider(requireActivity(), factory).get(HomeViewModel.class);
+        try {
+            // Dins de onViewCreated
+            AppDatabase db = AppDatabase.getInstance(requireContext());
+            GameRepository repository = new GameRepository(db.savedGameDao(), db.gameEntryDao());
+            ViewModelFactory factory = new ViewModelFactory(repository);
+            viewModel = new ViewModelProvider(this, factory).get(HomeViewModel.class);
+            Log.d(TAG, "onViewCreated: ViewModel inicialitzat correctament");
+        } catch (Exception e) {
+            Log.e(TAG, "onViewCreated: Error inicialitzant el ViewModel", e);
+        }
 
         // 2. Inicialitzar components de la UI (referències a vistes)
         setupUI(view);
@@ -86,9 +92,10 @@ public class HomeFragment extends Fragment {
 
         // 5. Observar canvis en l'estat de les dades al ViewModel
         observeViewModel();
-        
+
         // Realitzar una càrrega inicial si l'estat actual és buit
         if (viewModel.getGamesState().getValue() == null) {
+            Log.d(TAG, "onViewCreated: Estat buit, executant loadGames inicial");
             viewModel.loadGames(null, null);
         }
 
@@ -100,6 +107,7 @@ public class HomeFragment extends Fragment {
      * amb els prefixos personalitzats ("Order by:" i "Platform:").
      */
     private void setupUI(View view) {
+        Log.d(TAG, "setupUI: Configurant Spinners");
         spnrOrder = view.findViewById(R.id.spnr_order);
         spnrPlatform = view.findViewById(R.id.spnr_platform);
         rvGames = view.findViewById(R.id.rv_games);
@@ -110,18 +118,15 @@ public class HomeFragment extends Fragment {
                 android.R.layout.simple_spinner_item,
                 OrderValue.values()
         ) {
-            //getView ens permet modificar la vista de l'element seleccionat
             @NonNull
             @Override
             public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
                 View v = super.getView(position, convertView, parent);
-                // Fem servir el recurs de string amb placeholder per evitar hardcoding
                 String label = getItem(position) != null ? getItem(position).getLabel() : "";
                 ((TextView) v).setText(getString(R.string.order_by_prefix, label));
                 return v;
             }
 
-            // getDropDownView ens permet modificar la vista del menú desplegable
             @Override
             public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
                 View v = super.getDropDownView(position, convertView, parent);
@@ -167,19 +172,19 @@ public class HomeFragment extends Fragment {
      * i inicialitza l'adaptador de jocs gestionant el click per navegar al detall.
      */
     private void setupRecyclerView(View view) {
-        // Canviem el nombre de columnes segons l'orientació (2 en vertical, 3 en horitzontal)
+        Log.d(TAG, "setupRecyclerView: Inicialitzant l'adaptador i el grid");
         int spanCount = getResources().getConfiguration().orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE ? 3 : 2;
         rvGames.setLayoutManager(new GridLayoutManager(getContext(), spanCount));
-        
+
         adapter = new GameAdapter();
 
-        // Configuració del callback quan es prem un joc: naveguem al detall passant l'ID
         adapter.setOnGameClickListener(game -> {
+            Log.d(TAG, "onGameClick: Navegant al detall del joc ID=" + game.getId());
             Bundle args = new Bundle();
             args.putInt("gameId", game.getId());
             Navigation.findNavController(view).navigate(R.id.action_homeFragment_to_gameDetailFragment, args);
         });
-        
+
         rvGames.setAdapter(adapter);
     }
 
@@ -188,13 +193,21 @@ public class HomeFragment extends Fragment {
      * i demana al ViewModel que torni a carregar les dades de l'API.
      */
     private void setupListeners() {
+        Log.d(TAG, "setupListeners: Configurant onItemSelectedListeners");
         AdapterView.OnItemSelectedListener filterListener = new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (isFirstSelection) {
+                    Log.d(TAG, "onItemSelected: Ignorant primera selecció automàtica");
+                    isFirstSelection = false;
+                    return;
+                }
                 OrderValue order = (OrderValue) spnrOrder.getSelectedItem();
                 PlatformValue platform = (PlatformValue) spnrPlatform.getSelectedItem();
 
-                // Demanem al ViewModel carregar jocs amb els nous filtres
+                Log.d(TAG, "onItemSelected: Filtres canviats. Order=" + (order != null ? order.getValue() : "null") +
+                        ", Platform=" + (platform != null ? platform.getValue() : "null"));
+
                 if (order != null && platform != null) {
                     viewModel.loadGames(order.getValue(), platform.getValue());
                 }
@@ -213,23 +226,31 @@ public class HomeFragment extends Fragment {
      * mostra l'estat de càrrega, els resultats obtinguts o els errors produïts.
      */
     private void observeViewModel() {
+        Log.d(TAG, "observeViewModel: Començant a observar gamesState");
         viewModel.getGamesState().observe(getViewLifecycleOwner(), state -> {
-            if (state == null) return;
+            if (state == null) {
+                Log.w(TAG, "observeViewModel: L'estat rebut és null");
+                return;
+            }
 
+            Log.d(TAG, "observeViewModel: Nou estat rebut: " + state.status);
             switch (state.status) {
                 case LOADING:
-                    // TODO: Gestionar visualment l'estat de càrrega (ex: mostrar ProgressBar)
-                    Log.d(TAG, "observeViewModel: Carregant jocs...");
+                    Log.d(TAG, "observeViewModel: Mostrant indicador de càrrega");
                     break;
                 case SUCCESS:
-                    // Si la càrrega és correcta, passem la llista de jocs a l'adaptador
                     if (state.data != null) {
+                        Log.d(TAG, "observeViewModel: Èxit. S'han rebut " + state.data.size() + " jocs");
                         adapter.setGames(state.data);
+                    } else {
+                        Log.w(TAG, "observeViewModel: Èxit però la llista de jocs és null");
                     }
                     break;
                 case ERROR:
-                    // TODO: Mostrar un missatge d'error a l'usuari (Toast o Snackbar)
-                    Log.e(TAG, "observeViewModel: Error carregant jocs", state.error);
+                    Log.e(TAG, "observeViewModel: Error detectat en l'estat", state.error);
+                    if (state.error != null) {
+                        Log.e(TAG, "observeViewModel: Missatge d'error: " + state.error.getMessage());
+                    }
                     break;
             }
         });
