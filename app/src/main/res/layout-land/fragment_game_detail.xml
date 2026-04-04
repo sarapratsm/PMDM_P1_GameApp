@@ -1,6 +1,177 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#121212"
+    android:fillViewport="true">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.45" />
+
+        <!-- IMATGE DE FONS (ESQUERRA) -->
+        <ImageView
+            android:id="@+id/img_detail"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:scaleType="centerCrop"
+            android:alpha="0.5"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/guideline_vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/gameapp" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/gradient_overlay"
+            app:layout_constraintBottom_toBottomOf="@id/img_detail"
+            app:layout_constraintEnd_toEndOf="@id/img_detail"
+            app:layout_constraintStart_toStartOf="@id/img_detail"
+            app:layout_constraintTop_toTopOf="@id/img_detail" />
+
+        <!-- CONTINGUT COLUMNA ESQUERRA -->
+        <TextView
+            android:id="@+id/txt_detail_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="16dp"
+            android:textColor="@android:color/white"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@id/guideline_vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="The Witcher 3: Wild Hunt" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnAddMyGames"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/add_to_my_games"
+            android:textColor="@android:color/black"
+            app:backgroundTint="@android:color/white"
+            app:cornerRadius="4dp"
+            app:icon="@android:drawable/ic_input_add"
+            app:iconGravity="end"
+            app:iconTint="@android:color/holo_green_dark"
+            app:layout_constraintStart_toStartOf="@id/txt_detail_title"
+            app:layout_constraintTop_toBottomOf="@id/txt_detail_title" />
+
+        <TextView
+            android:id="@+id/txt_major_rating"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@id/txt_detail_title"
+            app:layout_constraintStart_toStartOf="@id/txt_detail_title"
+            app:layout_constraintTop_toBottomOf="@id/btnAddMyGames"
+            tools:text="Exceptional 🎯" />
+
+        <TextView
+            android:id="@+id/txt_rating_count"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="@id/txt_detail_title"
+            app:layout_constraintStart_toStartOf="@id/txt_detail_title"
+            app:layout_constraintTop_toBottomOf="@id/txt_major_rating"
+            tools:text="7279 RATINGS" />
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/cg_ratings_bars"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            app:chipSpacingHorizontal="12dp"
+            app:chipSpacingVertical="8dp"
+            app:layout_constraintEnd_toEndOf="@id/txt_detail_title"
+            app:layout_constraintStart_toStartOf="@id/txt_detail_title"
+            app:layout_constraintTop_toBottomOf="@id/txt_rating_count" />
+
+        <TextView
+            android:id="@+id/label_genres"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="Genres"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@id/txt_detail_title"
+            app:layout_constraintTop_toBottomOf="@id/cg_ratings_bars" />
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chip_group_genres"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="32dp"
+            app:chipSpacingHorizontal="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/txt_detail_title"
+            app:layout_constraintStart_toStartOf="@id/txt_detail_title"
+            app:layout_constraintTop_toBottomOf="@id/label_genres"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <!-- CONTINGUT COLUMNA DRETA -->
+        <TextView
+            android:id="@+id/label_about"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="32dp"
+            android:text="@string/about"
+            android:textColor="@android:color/white"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@id/guideline_vertical"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/txt_detail_description"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="24dp"
+            android:lineSpacingExtra="4dp"
+            android:textColor="#CCCCCC"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/label_about"
+            app:layout_constraintTop_toBottomOf="@id/label_about"
+            tools:text="Long description of the game goes here..." />
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/vp_carrousel"
+            android:layout_width="0dp"
+            android:layout_height="250dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="32dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/label_about"
+            app:layout_constraintTop_toBottomOf="@id/txt_detail_description"
+            app:layout_constraintVertical_bias="0.0" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

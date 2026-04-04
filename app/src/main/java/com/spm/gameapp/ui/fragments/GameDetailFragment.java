@@ -77,6 +77,7 @@ public class GameDetailFragment extends Fragment {
         observeViewModel();
         viewModel.loadGameDetail(gameId);
         viewModel.loadScreenshots(gameId);
+        viewModel.checkIfGameIsSaved(gameId);
     }
 
     private void initViews(View view) {
@@ -111,6 +112,7 @@ public class GameDetailFragment extends Fragment {
                     Game game = viewModel.getGameState().getValue().data;
                     SavedGame savedGame = new SavedGame(game.getId(), game.getName(), game.getBackgroundImage());
                     viewModel.saveGame(savedGame);
+                    viewModel.checkIfGameIsSaved(game.getId());
                     Toast.makeText(requireContext(), R.string.add_to_my_games, Toast.LENGTH_SHORT).show();
                 }
             });
@@ -138,6 +140,22 @@ public class GameDetailFragment extends Fragment {
         viewModel.getScreenshots().observe(getViewLifecycleOwner(), screenshots -> {
             if (screenshots != null) {
                 imageAdapter.setScreenshots(screenshots);
+            }
+        });
+
+        //observador per al botó
+        viewModel.getIsSaved().observe(getViewLifecycleOwner(), isSaved -> {
+            if (isSaved) {
+                btnAddMyGames.setText("In my collection");
+                btnAddMyGames.setEnabled(false); // Opcional: el desactivem
+                btnAddMyGames.setIconResource(android.R.drawable.checkbox_on_background);
+                btnAddMyGames.setBackgroundColor(Color.parseColor("#2E7D32")); // Verd fosc
+                btnAddMyGames.setTextColor(Color.WHITE);
+            } else {
+                btnAddMyGames.setText(R.string.add_to_my_games);
+                btnAddMyGames.setEnabled(true);
+                btnAddMyGames.setBackgroundColor(Color.WHITE);
+                btnAddMyGames.setTextColor(Color.BLACK);
             }
         });
     }

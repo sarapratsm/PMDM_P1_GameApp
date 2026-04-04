@@ -31,7 +31,7 @@ public class GameDetailViewModel extends ViewModel {
     // LiveData que el Fragment observarà
     private final MutableLiveData<UiState<Game>> gameState = new MutableLiveData<>();
     private final MutableLiveData<List<Screenshot>> screenshots = new MutableLiveData<>();
-
+    private final MutableLiveData<Boolean> isSaved = new MutableLiveData<>();
     public GameDetailViewModel(GameRepository repository) {
         this.repository = repository;
     }
@@ -41,6 +41,9 @@ public class GameDetailViewModel extends ViewModel {
     }
     public LiveData<List<Screenshot>> getScreenshots() {
         return screenshots;
+    }
+    public LiveData<Boolean> getIsSaved() {
+        return isSaved;
     }
 
     public void loadGameDetail(int gameId) {
@@ -84,6 +87,22 @@ public class GameDetailViewModel extends ViewModel {
             @Override
             public void onError(Throwable t) {
                 Log.e(TAG, "loadScreenshots: Error carregant captures", t);
+            }
+        });
+    }
+
+    public void checkIfGameIsSaved(int gameId) {
+        repository.isGameSaved(gameId, new GameRepository.RepositoryCallback<Boolean>() {
+            @Override
+            public void onLoaded(Boolean data) {
+                // Actualitzem el LiveData amb la resposta (true/false)
+                isSaved.setValue(data);
+            }
+
+            @Override
+            public void onError(Throwable t) {
+                Log.e(TAG, "Error comprovant si el joc està desat", t);
+                isSaved.setValue(false);
             }
         });
     }

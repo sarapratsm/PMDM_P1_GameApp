@@ -155,13 +155,18 @@ public class GameRepository {
         });
     }
 
+    // Rep el gameId i el callback com a paràmetres
     public void isGameSaved(int gameId, RepositoryCallback<Boolean> callback) {
         Log.d(TAG, "isGameSaved: comprovant si el joc ID=" + gameId + " està desat");
         executor.execute(() -> {
             try {
+                // Busquem a la base de dades
                 SavedGame game = savedGameDao.getSavedGameById(gameId);
                 boolean isSaved = (game != null);
+
                 Log.d(TAG, "isGameSaved: el joc ID=" + gameId + (isSaved ? " SÍ" : " NO") + " està desat");
+
+                // Retornem el resultat al fil principal mitjançant el callback
                 mainHandler.post(() -> callback.onLoaded(isSaved));
             } catch (Exception e) {
                 Log.e(TAG, "isGameSaved: Error comprovant si el joc està desat", e);

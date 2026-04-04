@@ -19,4 +19,5 @@
     <string name="about">About</string>
     <string name="rating_count">23057 RATINGS</string>
     <string name="sample_title">Sample Title for GameApp</string>
+    <string name="about_description">Game description goes here...</string>
 </resources>
