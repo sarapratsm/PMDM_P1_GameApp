@@ -2,6 +2,7 @@ package com.spm.gameapp.api;
 
 import com.spm.gameapp.api.model.Game;
 import com.spm.gameapp.api.model.GameList;
+import com.spm.gameapp.api.model.GameScreenshotsResponse;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -20,6 +21,12 @@ public interface GameApiService {
 
     @GET("games/{id}")
     Call<Game> getGameDetail(
+            @Path("id") int gameId,
+            @Query("key") String apiKey
+    );
+
+    @GET("games/{id}/screenshots")
+    Call<GameScreenshotsResponse> getGameScreenshots(
             @Path("id") int gameId,
             @Query("key") String apiKey
     );

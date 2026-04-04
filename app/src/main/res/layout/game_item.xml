@@ -41,31 +41,35 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:text="4.5" />
 
+        <LinearLayout
+            android:id="@+id/ll_platforms"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="-7dp"
+            android:layout_marginEnd="12dp"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/img_game" />
+
         <TextView
             android:id="@+id/txt_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="12dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="12dp"
             android:ellipsize="end"
             android:maxLines="1"
             android:textSize="16sp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/img_game"
-            tools:text="The Witcher 3: Wild Hunt" />
-
-        <LinearLayout
-            android:id="@+id/ll_platforms"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="6dp"
-            android:layout_marginBottom="12dp"
-            android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/txt_title" />
+            app:layout_constraintTop_toBottomOf="@id/ll_platforms"
+            tools:text="The Witcher 3: Wild Hunt" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

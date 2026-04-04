@@ -7,8 +7,11 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.spm.gameapp.api.model.Game;
+import com.spm.gameapp.api.model.Screenshot;
 import com.spm.gameapp.db.model.SavedGame;
 import com.spm.gameapp.repository.GameRepository;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -27,6 +30,7 @@ public class GameDetailViewModel extends ViewModel {
     private final GameRepository repository;
     // LiveData que el Fragment observarà
     private final MutableLiveData<UiState<Game>> gameState = new MutableLiveData<>();
+    private final MutableLiveData<List<Screenshot>> screenshots = new MutableLiveData<>();
 
     public GameDetailViewModel(GameRepository repository) {
         this.repository = repository;
@@ -34,6 +38,9 @@ public class GameDetailViewModel extends ViewModel {
 
     public LiveData<UiState<Game>> getGameState() {
         return gameState;
+    }
+    public LiveData<List<Screenshot>> getScreenshots() {
+        return screenshots;
     }
 
     public void loadGameDetail(int gameId) {
@@ -63,6 +70,21 @@ public class GameDetailViewModel extends ViewModel {
         Log.d(TAG, "saveGame: demanant desar el joc " + savedGame.getTitle());
         repository.saveGame(savedGame, () -> {
             Log.d(TAG, "saveGame: Joc desat correctament");
+        });
+    }
+
+    public void loadScreenshots(int gameId) {
+        Log.d(TAG, "loadScreenshots: carregant captures del joc ID=" + gameId);
+        repository.getGameScreenshots(gameId, new GameRepository.RepositoryCallback<List<Screenshot>>() {
+            @Override
+            public void onLoaded(List<Screenshot> data) {
+                Log.d(TAG, "loadScreenshots: Captures carregades correctament");
+                screenshots.setValue(data);
+            }
+            @Override
+            public void onError(Throwable t) {
+                Log.e(TAG, "loadScreenshots: Error carregant captures", t);
+            }
         });
     }
 }

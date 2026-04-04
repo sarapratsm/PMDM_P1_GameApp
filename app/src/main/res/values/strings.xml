@@ -15,4 +15,8 @@
     <string name="lorem_ipsum_dolor_sit_amet">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed iaculis erat nunc, vel pharetra ipsum tempor sagittis. In sit amet est interdum, rutrum sem et, efficitur est. Fusce eu eleifend elit. Etiam nisi augue, sagittis a nunc molestie, imperdiet cras.</string>
     <string name="eliminar_joc">Eliminar joc</string>
     <string name="button_delete_description">Button delete</string>
+    <string name="add_to_my_games">Add to My games</string>
+    <string name="about">About</string>
+    <string name="rating_count">23057 RATINGS</string>
+    <string name="sample_title">Sample Title for GameApp</string>
 </resources>

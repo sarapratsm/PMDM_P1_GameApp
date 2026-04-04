@@ -8,6 +8,8 @@ import com.spm.gameapp.api.GameApi;
 import com.spm.gameapp.api.GameApiService;
 import com.spm.gameapp.api.model.Game;
 import com.spm.gameapp.api.model.GameList;
+import com.spm.gameapp.api.model.GameScreenshotsResponse;
+import com.spm.gameapp.api.model.Screenshot;
 import com.spm.gameapp.db.dao.GameEntryDao;
 import com.spm.gameapp.db.dao.SavedGameDao;
 import com.spm.gameapp.db.model.GameEntry;
@@ -18,6 +20,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Repositori centralitzat de l'aplicació.
@@ -50,8 +54,34 @@ public class GameRepository {
         Log.d(TAG, "getGames: carregant jocs amb ordre=" + ordering + " i plataformes=" + platforms);
         String ord = (ordering == null || ordering.isEmpty()) ? null : ordering;
         String plat = (platforms == null || platforms.isEmpty()) ? null : platforms;
-        return apiService.getGames(GameApi.API_KEY, 20, ord, plat);
+        return apiService.getGames(GameApi.API_KEY, 24, ord, plat);
     }
+
+    /**
+     * Recupera els screenshots d'un joc concret per ID.
+     * Notifica una llista de Screenshots directament al ViewModel.
+     */
+    public void getGameScreenshots(int gameId, RepositoryCallback<List<Screenshot>> callback) {
+        apiService.getGameScreenshots(gameId, GameApi.API_KEY).enqueue(new Callback<GameScreenshotsResponse>() {
+            @Override
+            public void onResponse(Call<GameScreenshotsResponse> call, Response<GameScreenshotsResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    // Aquí extraiem la llista del 'wrapper' de l'API
+                    callback.onLoaded(response.body().getResults());
+                } else {
+                    callback.onError(new Exception("Error carregant captures: " + response.code()));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GameScreenshotsResponse> call, Throwable t) {
+                callback.onError(t);
+            }
+        });
+    }
+
+
+
 
     /**
      * Recupera el detall d'un joc concret per ID.
