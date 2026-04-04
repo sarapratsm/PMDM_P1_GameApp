@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.spm.gameapp.db.model.GameEntry;
 import com.spm.gameapp.db.model.SavedGame;
 import com.spm.gameapp.repository.GameRepository;
 
@@ -20,34 +21,42 @@ import java.util.List;
 public class MySavedGamesViewModel  extends ViewModel {
     private static final String TAG = "MySavedGamesViewModel";
 
-    // Repositori per a accedir a la base de dades
     private final GameRepository repository;
-    // LiveData per a gestionar l'estat de les dades
 
-    // 2. L'estat de la pantalla (Llista de jocs desats)
     private final MutableLiveData<UiState<List<SavedGame>>> gamesState = new MutableLiveData<>();
     private final MutableLiveData<SavedGame> selectedGame = new MutableLiveData<>();
     private final MutableLiveData<Boolean> showBlog = new MutableLiveData<>();
+    
+    // LiveData per a les entrades del blog del joc seleccionat
+    private final MutableLiveData<List<GameEntry>> entriesState = new MutableLiveData<>();
 
-    // Constructor
     public MySavedGamesViewModel(GameRepository repository) {
         this.repository = repository;
     }
 
-    // Getter per a l'estat de les dades
-    public MutableLiveData<UiState<List<SavedGame>>> getGamesState() {
+    public LiveData<UiState<List<SavedGame>>> getGamesState() {
         return gamesState;
     }
-    public MutableLiveData<Boolean> getShowBlog() {
+    
+    public LiveData<Boolean> getShowBlog() {
         return showBlog;
     }
-    public MutableLiveData<SavedGame> getSelectedGame() {
+    
+    public LiveData<SavedGame> getSelectedGame() {
         return selectedGame;
     }
 
-    // Funcions per a gestionar l'estat de les dades
+    public LiveData<List<GameEntry>> getEntriesState() {
+        return entriesState;
+    }
+
     public void selectGame(SavedGame game) {
         selectedGame.setValue(game);
+        if (game != null) {
+            loadEntriesForGame(game.getGameId());
+        } else {
+            entriesState.setValue(null);
+        }
     }
 
     public void deleteGame(SavedGame game, Runnable onComplete) {
@@ -58,19 +67,13 @@ public class MySavedGamesViewModel  extends ViewModel {
         showBlog.setValue(false);
     }
 
-
-    // Funció per a carregar els jocs desats
     public void loadGames() {
         gamesState.setValue(UiState.loading());
-        //demanar dades al repository
         repository.getAllSavedGames(new GameRepository.RepositoryCallback<List<SavedGame>>() {
-
-
             @Override
             public void onError(Throwable t) {
                 Log.e(TAG, "onError: " + t.getMessage());
                 gamesState.setValue(UiState.error(t));
-
             }
             @Override
             public void onLoaded(List<SavedGame> games) {
@@ -80,5 +83,24 @@ public class MySavedGamesViewModel  extends ViewModel {
         });
     }
 
+    public void loadEntriesForGame(int gameId) {
+        repository.getEntriesForGame(gameId, new GameRepository.RepositoryCallback<List<GameEntry>>() {
+            @Override
+            public void onLoaded(List<GameEntry> entries) {
+                entriesState.setValue(entries);
+            }
 
+            @Override
+            public void onError(Throwable t) {
+                Log.e(TAG, "Error loading blog entries", t);
+            }
+        });
+    }
+
+    public void insertGameEntry(GameEntry entry, Runnable onComplete) {
+        repository.insertGameEntry(entry, () -> {
+            loadEntriesForGame(entry.getGameId());
+            if (onComplete != null) onComplete.run();
+        });
+    }
 }

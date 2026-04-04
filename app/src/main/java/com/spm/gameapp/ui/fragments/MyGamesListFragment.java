@@ -1,6 +1,7 @@
 package com.spm.gameapp.ui.fragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,7 @@ import com.spm.gameapp.viewmodel.ViewModelFactory;
 
 public class MyGamesListFragment extends Fragment {
 
+    private static final String TAG = "MyGamesListFragment";
     private MySavedGamesViewModel viewModel;
     private RecyclerView rvMyGames;
     private SavedGameAdapter adapter;
@@ -29,9 +31,7 @@ public class MyGamesListFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_my_games_list, container, false);
-        adapter = new SavedGameAdapter();
-        return v;
+        return inflater.inflate(R.layout.fragment_my_games_list, container, false);
     }
 
     @Override
@@ -47,27 +47,31 @@ public class MyGamesListFragment extends Fragment {
         viewModel = new ViewModelProvider(requireActivity(), factory).get(MySavedGamesViewModel.class);
 
         setupRecyclerView();
-
-        adapter.setOnDeleteClickListener(game -> {
-            // 1. Demanem al ViewModel que esborri el joc de Room
-            viewModel.deleteGame(game, () -> {
-                /* 2. Un cop esborrat, recarreguem la llista per actualitzar la UI */
-                viewModel.loadGames();
-                Toast.makeText(requireContext(), game.getTitle() + " eliminat", Toast.LENGTH_SHORT).show();
-            });
-        });
-
         observeViewModel();
+
+        // Disparar la càrrega de jocs guardats
+        viewModel.loadGames();
     }
 
     private void setupRecyclerView() {
-        //defineix una quadrícula de dues columnes
-        rvMyGames.setLayoutManager(new GridLayoutManager(getContext(), 2));
+        // Initialize adapter once
         adapter = new SavedGameAdapter();
+        
+        // Setup layout manager (grid of 2 columns)
+        rvMyGames.setLayoutManager(new GridLayoutManager(getContext(), 2));
         
         // Quan cliquem un joc, el seleccionem al ViewModel
         adapter.setOnItemClickListener(game -> {
+            Log.d(TAG, "Game selected: " + game.getTitle());
             viewModel.selectGame(game);
+        });
+
+        // Configurar el botó d'eliminar
+        adapter.setOnDeleteClickListener(game -> {
+            viewModel.deleteGame(game, () -> {
+                viewModel.loadGames();
+                Toast.makeText(requireContext(), game.getTitle() + " eliminat", Toast.LENGTH_SHORT).show();
+            });
         });
 
         rvMyGames.setAdapter(adapter);

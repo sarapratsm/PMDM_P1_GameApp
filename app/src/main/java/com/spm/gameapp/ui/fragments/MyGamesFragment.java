@@ -64,11 +64,6 @@ public class MyGamesFragment extends Fragment {
             // TODO: Implementar l'exportació a Excel tal com demana l'AGENTS.md
             Toast.makeText(requireContext(), "Preparant exportació a Excel...", Toast.LENGTH_SHORT).show();
         });
-
-        // 4. Disparar la càrrega de jocs guardats si encara no s'ha fet
-        if (viewModel.getGamesState().getValue() == null) {
-            viewModel.loadGames();
-        }
         
         configOnBackPressed();
         observeViewModel();
