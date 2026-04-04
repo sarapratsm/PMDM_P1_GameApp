@@ -5,7 +5,7 @@
     <!--we need to ensure that the id of each MenuItem in your menu XML matches the id of the corresponding destination in your navigation graph (navigation_map.xml).-->
     <item
         android:id="@+id/homeFragment"
-        android:title="@string/home"
+        android:title=""
         android:icon="@drawable/home"
         app:showAsAction="ifRoom" />
 
