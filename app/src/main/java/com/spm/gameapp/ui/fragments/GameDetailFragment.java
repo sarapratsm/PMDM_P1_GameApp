@@ -28,6 +28,7 @@ import com.google.android.material.chip.ChipGroup;
 import com.spm.gameapp.R;
 import com.spm.gameapp.api.model.Game;
 import com.spm.gameapp.api.model.Genre;
+import com.spm.gameapp.api.model.ParentPlatform;
 import com.spm.gameapp.api.model.Rating;
 import com.spm.gameapp.db.AppDatabase;
 import com.spm.gameapp.db.model.SavedGame;
@@ -36,7 +37,11 @@ import com.spm.gameapp.ui.adapter.ImageAdapter;
 import com.spm.gameapp.viewmodel.GameDetailViewModel;
 import com.spm.gameapp.viewmodel.ViewModelFactory;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class GameDetailFragment extends Fragment {
 
@@ -48,10 +53,12 @@ public class GameDetailFragment extends Fragment {
     private ViewPager2 vpCarrousel;
     private ImageAdapter imageAdapter = new ImageAdapter();
     private TextView txtDetailTitle, txtDescription, txtRatingCount, txtMajorRating;
+    private TextView txtReleasedDate, txtPlaytime;
+    private LinearLayout llPlatformIcons;
     private ProgressBar progressDetail;
     private ImageView imgDetail;
     private MaterialButton btnAddMyGames;
-    private ChipGroup llRatingsBars;
+    private ChipGroup cgRatingsBars;
     private ChipGroup chipGroupGenres;
 
     @Override
@@ -77,17 +84,19 @@ public class GameDetailFragment extends Fragment {
         observeViewModel();
         viewModel.loadGameDetail(gameId);
         viewModel.loadScreenshots(gameId);
-        viewModel.checkIfGameIsSaved(gameId);
     }
 
     private void initViews(View view) {
         txtDetailTitle = view.findViewById(R.id.txt_detail_title);
         txtDescription = view.findViewById(R.id.txt_detail_description);
         txtRatingCount = view.findViewById(R.id.txt_rating_count);
+        txtReleasedDate = view.findViewById(R.id.txt_released_date);
+        txtPlaytime = view.findViewById(R.id.txt_playtime);
+        llPlatformIcons = view.findViewById(R.id.ll_platform_icons);
         progressDetail = view.findViewById(R.id.progress_detail);
         imgDetail = view.findViewById(R.id.img_detail);
         btnAddMyGames = view.findViewById(R.id.btnAddMyGames);
-        llRatingsBars = view.findViewById(R.id.cg_ratings_bars);
+        cgRatingsBars = view.findViewById(R.id.cg_ratings_bars);
         chipGroupGenres = view.findViewById(R.id.chip_group_genres);
         vpCarrousel = view.findViewById(R.id.vp_carrousel);
         txtMajorRating = view.findViewById(R.id.txt_major_rating);
@@ -112,7 +121,6 @@ public class GameDetailFragment extends Fragment {
                     Game game = viewModel.getGameState().getValue().data;
                     SavedGame savedGame = new SavedGame(game.getId(), game.getName(), game.getBackgroundImage());
                     viewModel.saveGame(savedGame);
-                    viewModel.checkIfGameIsSaved(game.getId());
                     Toast.makeText(requireContext(), R.string.add_to_my_games, Toast.LENGTH_SHORT).show();
                 }
             });
@@ -142,26 +150,26 @@ public class GameDetailFragment extends Fragment {
                 imageAdapter.setScreenshots(screenshots);
             }
         });
-
-        //observador per al botó
-        viewModel.getIsSaved().observe(getViewLifecycleOwner(), isSaved -> {
-            if (isSaved) {
-                btnAddMyGames.setText("In my collection");
-                btnAddMyGames.setEnabled(false); // Opcional: el desactivem
-                btnAddMyGames.setIconResource(android.R.drawable.checkbox_on_background);
-                btnAddMyGames.setBackgroundColor(Color.parseColor("#2E7D32")); // Verd fosc
-                btnAddMyGames.setTextColor(Color.WHITE);
-            } else {
-                btnAddMyGames.setText(R.string.add_to_my_games);
-                btnAddMyGames.setEnabled(true);
-                btnAddMyGames.setBackgroundColor(Color.WHITE);
-                btnAddMyGames.setTextColor(Color.BLACK);
-            }
-        });
     }
 
     private void bindData(Game game) {
         if (txtDetailTitle != null) txtDetailTitle.setText(game.getName());
+
+        // Released Date
+        if (txtReleasedDate != null && game.getReleased() != null) {
+            txtReleasedDate.setText(formatDate(game.getReleased()));
+        }
+
+        // Playtime
+        if (txtPlaytime != null) {
+            String playtimeText = "AVERAGE PLAYTIME: " + game.getPlaytime() + " HOURS";
+            txtPlaytime.setText(playtimeText);
+        }
+
+        // Platform Icons
+        if (llPlatformIcons != null && game.getParentPlatforms() != null) {
+            setupPlatformIcons(game.getParentPlatforms());
+        }
 
         if (game.getDescription() != null && txtDescription != null) {
             txtDescription.setText(Html.fromHtml(game.getDescription(), Html.FROM_HTML_MODE_COMPACT));
@@ -187,42 +195,73 @@ public class GameDetailFragment extends Fragment {
         if (game.getRatings() != null) {
             setupRatings(game.getRatings(), game.getRatingsCount());
             
-            // Agafem la primera valoració (sol ser la majoritària)
             if (!game.getRatings().isEmpty()) {
                 String topRating = game.getRatings().get(0).getTitle();
                 topRating = topRating.substring(0, 1).toUpperCase() + topRating.substring(1);
 
                 if (txtMajorRating != null) {
-                    txtMajorRating.setText(topRating);
+                    txtMajorRating.setText(topRating + " 🎯");
                 }
             }
         }
     }
 
-    private void setupRatings(List<Rating> ratings, int totalRatings) {
-        // 1. Verificació de seguretat: ens assegurem que el contenidor existeix
-        if (llRatingsBars == null || !isAdded() || getContext() == null) return;
+    private String formatDate(String dateStr) {
+        try {
+            SimpleDateFormat fromApi = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+            SimpleDateFormat toDisplay = new SimpleDateFormat("MMM d, yyyy", Locale.US);
+            Date date = fromApi.parse(dateStr);
+            return toDisplay.format(date).toUpperCase();
+        } catch (ParseException e) {
+            return dateStr;
+        }
+    }
 
-        llRatingsBars.removeAllViews();
+    private void setupPlatformIcons(List<ParentPlatform> platforms) {
+        llPlatformIcons.removeAllViews();
+        for (ParentPlatform p : platforms) {
+            ImageView icon = new ImageView(getContext());
+            int iconRes = getPlatformIcon(p.getPlatform().getSlug());
+            if (iconRes != 0) {
+                icon.setImageResource(iconRes);
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(40, 40);
+                params.setMargins(0, 0, 12, 0);
+                icon.setLayoutParams(params);
+                icon.setColorFilter(Color.WHITE);
+                llPlatformIcons.addView(icon);
+            }
+        }
+    }
+
+    private int getPlatformIcon(String slug) {
+        switch (slug) {
+            case "pc": return R.drawable.windows;
+            case "playstation": return R.drawable.playstation;
+            case "xbox": return R.drawable.xbox;
+            case "ios": return R.drawable.ios;
+            case "android": return R.drawable.android;
+            case "mac": return R.drawable.mac;
+            case "linux": return R.drawable.linux;
+            case "nintendo": return R.drawable.nintendo;
+            default: return 0;
+        }
+    }
+
+    private void setupRatings(List<Rating> ratings, int totalRatings) {
+        if (cgRatingsBars == null || !isAdded() || getContext() == null) return;
+        cgRatingsBars.removeAllViews(); 
 
         if (txtRatingCount != null) {
             txtRatingCount.setText(totalRatings + " RATINGS");
         }
 
         for (Rating rating : ratings) {
-            // 2. Creem un Chip en lloc d'un TextView
-            Chip chip = new Chip(requireContext());
-
+            TextView tvRating = new TextView(requireContext());
             String title = rating.getTitle().substring(0, 1).toUpperCase() + rating.getTitle().substring(1);
-            chip.setText(title + " " + rating.getCount());
+            tvRating.setText(title + " " + rating.getCount());
+            tvRating.setTextColor(Color.WHITE);
+            tvRating.setPadding(0, 10, 0, 10);
 
-            // Estil del Chip per a mode fosc
-            chip.setTextColor(Color.WHITE);
-            chip.setChipBackgroundColorResource(android.R.color.transparent);
-            chip.setChipStrokeColorResource(android.R.color.darker_gray);
-            chip.setChipStrokeWidth(2f);
-
-            // 3. Assignem el color del cercle
             int color;
             switch (rating.getTitle().toLowerCase()) {
                 case "exceptional": color = Color.GREEN; break;
@@ -232,13 +271,9 @@ public class GameDetailFragment extends Fragment {
                 default: color = Color.GRAY;
             }
 
-            // 4. Posem el cercle com a "Chip Icon" (part esquerra)
-            chip.setChipIcon(createCircle(color));
-            chip.setChipIconVisible(true);
-            chip.setIconStartPadding(10f);
-
-            // Afegim el chip al ChipGroup
-            llRatingsBars.addView(chip);
+            tvRating.setCompoundDrawablesWithIntrinsicBounds(createCircle(color), null, null, null);
+            tvRating.setCompoundDrawablePadding(20);
+            cgRatingsBars.addView(tvRating);
         }
     }
 
