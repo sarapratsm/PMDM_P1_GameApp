@@ -13,20 +13,22 @@
         android:layout_height="wrap_content"
         android:paddingBottom="32dp">
 
+        <!-- IMATGE DE PORTADA MÉS CURTA -->
         <ImageView
             android:id="@+id/img_detail"
             android:layout_width="match_parent"
-            android:layout_height="350dp"
+            android:layout_height="300dp"
             android:scaleType="centerCrop"
+            android:alpha="0.6"
             app:layout_constraintTop_toTopOf="parent"
-            tools:src="@drawable/gameapp"
-            android:contentDescription="@string/about_description"/>
+            tools:src="@drawable/gameapp" />
 
+        <!-- DEGRADAT -->
         <View
             android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:layout_height="300dp"
             android:background="@drawable/gradient_overlay"
-            app:layout_constraintBottom_toBottomOf="@id/img_detail" />
+            app:layout_constraintTop_toTopOf="@id/img_detail" />
 
         <ProgressBar
             android:id="@+id/progress_detail"
@@ -39,18 +41,18 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/img_detail" />
 
-        <!-- Header Info (Released, Platforms, Playtime) -->
+        <!-- HEADER AL CAPDAMUNT DEL PARENT -->
         <LinearLayout
             android:id="@+id/ll_game_info_header"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginHorizontal="24dp"
+            android:layout_marginTop="24dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/img_detail">
+            app:layout_constraintTop_toTopOf="parent">
 
             <TextView
                 android:id="@+id/txt_released_date"
@@ -84,78 +86,81 @@
                 tools:text="AVERAGE PLAYTIME: 43 HOURS" />
         </LinearLayout>
 
+        <!-- TÍTOL DINS DE LA IMATGE -->
         <TextView
             android:id="@+id/txt_detail_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginHorizontal="24dp"
+            android:layout_marginTop="12dp"
             android:textColor="@android:color/white"
-            android:textSize="32sp"
+            android:textSize="36sp"
             android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/btnAddMyGames"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/ll_game_info_header"
-            tools:text="@string/sample_title" />
+            tools:text="The Witcher 3: Wild Hunt" />
 
+        <!-- BOTÓ ENGANXAT A LA PART DE BAIX DE LA IMATGE -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnAddMyGames"
             android:layout_width="wrap_content"
-            android:layout_height="60dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="16dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginBottom="16dp"
             android:text="@string/add_to_my_games"
             android:textAllCaps="false"
             android:textColor="@android:color/black"
             app:backgroundTint="@android:color/white"
-            app:cornerRadius="8dp"
+            app:cornerRadius="4dp"
             app:icon="@android:drawable/ic_input_add"
             app:iconTint="@android:color/holo_green_dark"
             app:iconGravity="end"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txt_detail_title" />
+            app:layout_constraintBottom_toBottomOf="@id/img_detail" />
 
+        <!-- RATING I ALTRES SOTA LA IMATGE -->
         <TextView
             android:id="@+id/txt_major_rating"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
+            android:layout_marginHorizontal="24dp"
             android:layout_marginTop="24dp"
-            android:text="@string/exceptional"
             android:textColor="@android:color/white"
-            android:textSize="20sp"
+            android:textSize="22sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/btnAddMyGames" />
+            app:layout_constraintTop_toBottomOf="@id/img_detail"
+            tools:text="Exceptional 🎯" />
 
         <TextView
             android:id="@+id/txt_rating_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginHorizontal="24dp"
+            android:layout_marginTop="4dp"
             android:textColor="@android:color/darker_gray"
             android:textSize="12sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/txt_major_rating"
-            tools:text="@string/rating_count" />
+            tools:text="7279 RATINGS" />
 
         <com.google.android.material.chip.ChipGroup
             android:id="@+id/cg_ratings_bars"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginHorizontal="24dp"
+            android:layout_marginTop="12dp"
             app:chipSpacingHorizontal="16dp"
             app:chipSpacingVertical="8dp"
-            app:layout_constraintTop_toBottomOf="@id/txt_rating_count"
-            tools:layout_height="50dp" />
+            app:layout_constraintTop_toBottomOf="@id/txt_rating_count" />
 
         <TextView
             android:id="@+id/label_genres"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
+            android:layout_marginHorizontal="24dp"
             android:layout_marginTop="24dp"
             android:text="Genres"
             android:textColor="@android:color/darker_gray"
@@ -168,7 +173,7 @@
             android:id="@+id/chip_group_genres"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
+            android:layout_marginHorizontal="24dp"
             android:layout_marginTop="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -178,11 +183,11 @@
             android:id="@+id/label_about"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginHorizontal="24dp"
+            android:layout_marginTop="32dp"
             android:text="@string/about"
             android:textColor="@android:color/white"
-            android:textSize="22sp"
+            android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/chip_group_genres" />
@@ -191,31 +196,27 @@
             android:id="@+id/txt_detail_description"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginHorizontal="24dp"
+            android:layout_marginTop="12dp"
             android:lineSpacingExtra="6dp"
             android:textColor="#CCCCCC"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/label_about"
-            tools:text="Long description of the game goes here..." />
+            tools:text="Description goes here..." />
 
-        <!-- Carrousel (Screenshots) -->
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/vp_carrousel"
             android:layout_width="match_parent"
             android:layout_height="250dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginHorizontal="24dp"
             android:orientation="horizontal"
             android:clipToPadding="false"
             android:clipChildren="false"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/txt_detail_description"
             app:layout_constraintBottom_toBottomOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </androidx.core.widget.NestedScrollView>

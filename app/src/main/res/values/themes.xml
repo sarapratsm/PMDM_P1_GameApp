@@ -1,8 +1,17 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.PMDM_P1_GameApp" parent="Theme.Material3.Dark.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/white</item>
+        <item name="colorOnPrimary">@color/black</item>
+        <item name="colorPrimaryContainer">#333333</item>
+        <item name="colorOnPrimaryContainer">@color/white</item>
+        <item name="colorSecondary">#CCCCCC</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <item name="colorSurface">#121212</item>
+        <item name="colorOnSurface">@color/white</item>
+        <item name="colorSurfaceVariant">#1E1E1E</item>
+        <item name="colorOnSurfaceVariant">#AAAAAA</item>
     </style>
 
     <style name="Theme.PMDM_P1_GameApp" parent="Base.Theme.PMDM_P1_GameApp" />
