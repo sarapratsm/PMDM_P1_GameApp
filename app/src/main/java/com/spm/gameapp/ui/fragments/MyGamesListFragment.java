@@ -50,6 +50,7 @@ public class MyGamesListFragment extends Fragment {
     }
 
     private void setupRecyclerView() {
+        //defineix una quadrícula de dues columnes
         rvMyGames.setLayoutManager(new GridLayoutManager(getContext(), 2));
         adapter = new SavedGameAdapter();
         

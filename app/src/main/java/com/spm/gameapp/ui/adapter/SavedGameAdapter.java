@@ -3,6 +3,7 @@ package com.spm.gameapp.ui.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -20,15 +21,26 @@ import java.util.List;
 public class SavedGameAdapter extends RecyclerView.Adapter<SavedGameAdapter.SavedGameViewHolder> {
 
     private List<SavedGame> games = new ArrayList<>();
-    private OnItemClickListener listener;
+    private OnItemClickListener onItemClickListener;
+
+    private OnDeleteClickListener deleteClickListener;
 
     public interface OnItemClickListener {
         void onItemClick(SavedGame game);
     }
 
-    public void setOnItemClickListener(OnItemClickListener listener) {
-        this.listener = listener;
+    public interface  OnDeleteClickListener {
+        void onDeleteClick(SavedGame game);
     }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.onItemClickListener = listener;
+    }
+
+    public void setOnDeleteClickListener(OnDeleteClickListener listener) {
+        this.deleteClickListener = listener;
+    }
+
 
     public void setGames(List<SavedGame> games) {
         this.games = games;
@@ -55,29 +67,40 @@ public class SavedGameAdapter extends RecyclerView.Adapter<SavedGameAdapter.Save
     class SavedGameViewHolder extends RecyclerView.ViewHolder {
         ImageView imgGame;
         TextView txtTitle;
-        LinearLayout llPlatforms;
+        ImageButton btnDelete;
+
+
+
 
         public SavedGameViewHolder(@NonNull View itemView) {
             super(itemView);
             imgGame = itemView.findViewById(R.id.img_game);
             txtTitle = itemView.findViewById(R.id.txt_title);
-            llPlatforms = itemView.findViewById(R.id.ll_platforms);
+            btnDelete = itemView.findViewById(R.id.btn_delete);
+
+            //
+            itemView.setOnClickListener(v -> {
+                int pos = getAdapterPosition();
+                if (onItemClickListener != null && pos != RecyclerView.NO_POSITION) {
+                    onItemClickListener.onItemClick(games.get(pos));
+                }
+            });
 
             itemView.setOnClickListener(v -> {
                 int pos = getAdapterPosition();
-                if (listener != null && pos != RecyclerView.NO_POSITION) {
-                    listener.onItemClick(games.get(pos));
+                if (deleteClickListener != null && pos != RecyclerView.NO_POSITION) {
+                    deleteClickListener.onDeleteClick(games.get(pos));
                 }
             });
+
         }
 
         public void bind(SavedGame game) {
-            //bind data to the views
             txtTitle.setText(game.getTitle());
-            Glide.with(itemView.getContext()).load(game.getImgUrl()).into(imgGame);
-            llPlatforms.removeAllViews();
-
-
+            Glide.with(itemView.getContext())
+                    .load(game.getImgUrl())
+                    .placeholder(R.drawable.gameapp) // Imatge per defecte mentre carrega
+                    .into(imgGame);
         }
     }
 }

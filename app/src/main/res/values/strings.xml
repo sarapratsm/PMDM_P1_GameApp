@@ -13,4 +13,5 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="lorem_ipsum_dolor_sit_amet">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed iaculis erat nunc, vel pharetra ipsum tempor sagittis. In sit amet est interdum, rutrum sem et, efficitur est. Fusce eu eleifend elit. Etiam nisi augue, sagittis a nunc molestie, imperdiet cras.</string>
+    <string name="eliminar_joc">Eliminar joc</string>
 </resources>
