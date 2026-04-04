@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -46,6 +47,16 @@ public class MyGamesListFragment extends Fragment {
         viewModel = new ViewModelProvider(requireActivity(), factory).get(MySavedGamesViewModel.class);
 
         setupRecyclerView();
+
+        adapter.setOnDeleteClickListener(game -> {
+            // 1. Demanem al ViewModel que esborri el joc de Room
+            viewModel.deleteGame(game, () -> {
+                /* 2. Un cop esborrat, recarreguem la llista per actualitzar la UI */
+                viewModel.loadGames();
+                Toast.makeText(requireContext(), game.getTitle() + " eliminat", Toast.LENGTH_SHORT).show();
+            });
+        });
+
         observeViewModel();
     }
 

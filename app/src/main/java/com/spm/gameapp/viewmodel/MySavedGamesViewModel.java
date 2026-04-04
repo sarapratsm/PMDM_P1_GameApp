@@ -26,9 +26,8 @@ public class MySavedGamesViewModel  extends ViewModel {
 
     // 2. L'estat de la pantalla (Llista de jocs desats)
     private final MutableLiveData<UiState<List<SavedGame>>> gamesState = new MutableLiveData<>();
-
     private final MutableLiveData<SavedGame> selectedGame = new MutableLiveData<>();
-
+    private final MutableLiveData<Boolean> showBlog = new MutableLiveData<>();
 
     // Constructor
     public MySavedGamesViewModel(GameRepository repository) {
@@ -38,6 +37,25 @@ public class MySavedGamesViewModel  extends ViewModel {
     // Getter per a l'estat de les dades
     public MutableLiveData<UiState<List<SavedGame>>> getGamesState() {
         return gamesState;
+    }
+    public MutableLiveData<Boolean> getShowBlog() {
+        return showBlog;
+    }
+    public MutableLiveData<SavedGame> getSelectedGame() {
+        return selectedGame;
+    }
+
+    // Funcions per a gestionar l'estat de les dades
+    public void selectGame(SavedGame game) {
+        selectedGame.setValue(game);
+    }
+
+    public void deleteGame(SavedGame game, Runnable onComplete) {
+        repository.deleteGame(game, onComplete);
+    }
+
+    public void closeBlog() {
+        showBlog.setValue(false);
     }
 
 
@@ -60,14 +78,6 @@ public class MySavedGamesViewModel  extends ViewModel {
                 Log.d(TAG, "onLoaded: " + games.size());
             }
         });
-    }
-
-    public void selectGame(SavedGame game) {
-        selectedGame.setValue(game);
-    }
-
-    public LiveData<SavedGame> getSelectedGame() {
-        return selectedGame;
     }
 
 

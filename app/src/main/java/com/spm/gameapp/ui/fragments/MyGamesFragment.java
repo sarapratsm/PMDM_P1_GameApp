@@ -1,5 +1,6 @@
 package com.spm.gameapp.ui.fragments;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -27,6 +29,9 @@ public class MyGamesFragment extends Fragment {
 
     private MySavedGamesViewModel viewModel;
     private ImageButton btnShare;
+    private View listContainer;
+    private View blogContainer;
+
 
     public MyGamesFragment() {
         // Required empty public constructor
@@ -51,6 +56,8 @@ public class MyGamesFragment extends Fragment {
 
         // 2. Vincular vistes globals
         btnShare = view.findViewById(R.id.btn_share);
+        listContainer = view.findViewById(R.id.list_container);
+        blogContainer = view.findViewById(R.id.blog_container);
 
         // 3. Configurar accions globals
         btnShare.setOnClickListener(v -> {
@@ -62,5 +69,49 @@ public class MyGamesFragment extends Fragment {
         if (viewModel.getGamesState().getValue() == null) {
             viewModel.loadGames();
         }
+        
+        configOnBackPressed();
+        observeViewModel();
+    }
+
+    private void configOnBackPressed() {
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(),
+                new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        // Si estem en vertical i el blog és visible, el tanquem
+                        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT
+                                && blogContainer.getVisibility() == View.VISIBLE) {
+
+                            blogContainer.setVisibility(View.GONE);
+                            listContainer.setVisibility(View.VISIBLE);
+                            viewModel.selectGame(null); // Deseleccionem el joc
+                        } else {
+                            // Si no, fem el "back" normal (sortir de la pantalla)
+                            setEnabled(false);
+                            requireActivity().onBackPressed();
+                        }
+                    }
+                });
+    }
+
+    // Lògica de gestió de la visibilitat del blog:
+    private void observeViewModel() {
+        viewModel.getSelectedGame().observe(getViewLifecycleOwner(), game -> {
+            if (game != null) {
+                // Comprovem l'orientació actual
+                int orientation = getResources().getConfiguration().orientation;
+
+                if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+                    // EN VERTICAL: Fem la transició (amaguem llista, mostrem blog)
+                    listContainer.setVisibility(View.GONE);
+                    blogContainer.setVisibility(View.VISIBLE);
+                } else {
+                    // EN HORITZONTAL: Ja es veuen els dos, només ens assegurem
+                    listContainer.setVisibility(View.VISIBLE);
+                    blogContainer.setVisibility(View.VISIBLE);
+                }
+            }
+        });
     }
 }

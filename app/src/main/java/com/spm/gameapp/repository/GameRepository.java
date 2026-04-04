@@ -47,6 +47,7 @@ public class GameRepository {
      * Recupera el llistat de jocs des de l'API de RAWG.
      */
     public Call<GameList> getGames(String ordering, String platforms) {
+        Log.d(TAG, "getGames: carregant jocs amb ordre=" + ordering + " i plataformes=" + platforms);
         String ord = (ordering == null || ordering.isEmpty()) ? null : ordering;
         String plat = (platforms == null || platforms.isEmpty()) ? null : platforms;
         return apiService.getGames(GameApi.API_KEY, 20, ord, plat);
@@ -56,7 +57,20 @@ public class GameRepository {
      * Recupera el detall d'un joc concret per ID.
      */
     public Call<Game> getGameDetail(int gameId) {
+        Log.d(TAG, "getGameDetail: carregant detall del joc ID=" + gameId);
         return apiService.getGameDetail(gameId, GameApi.API_KEY);
+    }
+
+    public void deleteSavedGame(SavedGame game, Object o) {
+        Log.d(TAG, "deleteSavedGame: eliminant joc " + game.getTitle());
+        executor.execute(() -> {
+            try {
+                savedGameDao.delete(game);
+                Log.d(TAG, "deleteSavedGame: Joc eliminat correctament: " + game.getTitle());
+            } catch (Exception e) {
+                Log.e(TAG, "deleteSavedGame: Error eliminant el joc", e);
+            }
+        });
     }
 
     // --- MÈTODES DE BASE DE DADES (ROOM) ---
@@ -72,46 +86,55 @@ public class GameRepository {
     // --- GESTIÓ DE SAVED GAMES ---
 
     public void saveGame(SavedGame game, Runnable onComplete) {
+        Log.d(TAG, "saveGame: desant joc " + game.getTitle());
         executor.execute(() -> {
             try {
                 savedGameDao.insert(game);
                 if (onComplete != null) mainHandler.post(onComplete);
-                Log.d(TAG, "Joc desat correctament: " + game.getTitle());
+                Log.d(TAG, "saveGame: Joc desat correctament: " + game.getTitle());
             } catch (Exception e) {
-                Log.e(TAG, "Error desant el joc", e);
+                Log.e(TAG, "saveGame: Error desant el joc", e);
             }
         });
     }
 
     public void deleteGame(SavedGame game, Runnable onComplete) {
+        Log.d(TAG, "deleteGame: eliminant joc " + game.getTitle());
         executor.execute(() -> {
             try {
                 savedGameDao.delete(game);
                 if (onComplete != null) mainHandler.post(onComplete);
-                Log.d(TAG, "Joc eliminat: " + game.getTitle());
+                Log.d(TAG, "deleteGame: Joc eliminat correctament: " + game.getTitle());
             } catch (Exception e) {
-                Log.e(TAG, "Error eliminant el joc", e);
+                Log.e(TAG, "deleteGame: Error eliminant el joc", e);
             }
         });
     }
 
     public void getAllSavedGames(RepositoryCallback<List<SavedGame>> callback) {
+        Log.d(TAG, "getAllSavedGames: carregant tots els jocs desats");
         executor.execute(() -> {
             try {
                 List<SavedGame> games = savedGameDao.getAllSavedGames();
+                Log.d(TAG, "getAllSavedGames: carregats " + games.size() + " jocs");
                 mainHandler.post(() -> callback.onLoaded(games));
             } catch (Exception e) {
+                Log.e(TAG, "getAllSavedGames: Error carregant jocs", e);
                 mainHandler.post(() -> callback.onError(e));
             }
         });
     }
 
     public void isGameSaved(int gameId, RepositoryCallback<Boolean> callback) {
+        Log.d(TAG, "isGameSaved: comprovant si el joc ID=" + gameId + " està desat");
         executor.execute(() -> {
             try {
                 SavedGame game = savedGameDao.getSavedGameById(gameId);
-                mainHandler.post(() -> callback.onLoaded(game != null));
+                boolean isSaved = (game != null);
+                Log.d(TAG, "isGameSaved: el joc ID=" + gameId + (isSaved ? " SÍ" : " NO") + " està desat");
+                mainHandler.post(() -> callback.onLoaded(isSaved));
             } catch (Exception e) {
+                Log.e(TAG, "isGameSaved: Error comprovant si el joc està desat", e);
                 mainHandler.post(() -> callback.onError(e));
             }
         });
@@ -120,35 +143,41 @@ public class GameRepository {
     // --- GESTIÓ DE GAME ENTRIES (BLOG) ---
 
     public void insertGameEntry(GameEntry entry, Runnable onComplete) {
+        Log.d(TAG, "insertGameEntry: afegint entrada de blog per al joc ID=" + entry.getGameId());
         executor.execute(() -> {
             try {
                 gameEntryDao.insert(entry);
                 if (onComplete != null) mainHandler.post(onComplete);
-                Log.d(TAG, "Entrada de blog afegida al joc ID: " + entry.getGameId());
+                Log.d(TAG, "insertGameEntry: Entrada de blog afegida correctament");
             } catch (Exception e) {
-                Log.e(TAG, "Error afegint entrada de blog", e);
+                Log.e(TAG, "insertGameEntry: Error afegint entrada de blog", e);
             }
         });
     }
 
     public void getEntriesForGame(int gameId, RepositoryCallback<List<GameEntry>> callback) {
+        Log.d(TAG, "getEntriesForGame: carregant entrades de blog per al joc ID=" + gameId);
         executor.execute(() -> {
             try {
                 List<GameEntry> entries = gameEntryDao.getGameEntriesByGameId(gameId);
+                Log.d(TAG, "getEntriesForGame: carregades " + entries.size() + " entrades");
                 mainHandler.post(() -> callback.onLoaded(entries));
             } catch (Exception e) {
+                Log.e(TAG, "getEntriesForGame: Error carregant entrades de blog", e);
                 mainHandler.post(() -> callback.onError(e));
             }
         });
     }
 
     public void deleteGameEntry(GameEntry entry, Runnable onComplete) {
+        Log.d(TAG, "deleteGameEntry: eliminant entrada de blog ID=" + entry.getId());
         executor.execute(() -> {
             try {
                 gameEntryDao.delete(entry);
                 if (onComplete != null) mainHandler.post(onComplete);
+                Log.d(TAG, "deleteGameEntry: Entrada de blog eliminada correctament");
             } catch (Exception e) {
-                Log.e(TAG, "Error eliminant entrada de blog", e);
+                Log.e(TAG, "deleteGameEntry: Error eliminant entrada de blog", e);
             }
         });
     }

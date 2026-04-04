@@ -1,5 +1,7 @@
 package com.spm.gameapp.viewmodel;
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -21,6 +23,7 @@ import retrofit2.Response;
  * (per exemple, per "Average rating") i filtrar per plataforma (PC, PS4, etc.).
  */
 public class HomeViewModel extends ViewModel {
+    private static final String TAG = "HomeViewModel";
 
     private final GameRepository repository;
     // LiveData per a l'estat de càrrega i resultats
@@ -35,19 +38,24 @@ public class HomeViewModel extends ViewModel {
     }
 
     public void loadGames(String ordering, String platforms) {
+        Log.d(TAG, "loadGames: iniciant càrrega amb ordre=" + ordering + " i plataformes=" + platforms);
         gamesState.setValue(UiState.loading());
         repository.getGames(ordering, platforms).enqueue(new Callback<GameList>() {
             @Override
             public void onResponse(Call<GameList> call, Response<GameList> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    gamesState.setValue(UiState.success(response.body().getResults()));
+                    List<Game> games = response.body().getResults();
+                    Log.d(TAG, "loadGames: S'han carregat " + (games != null ? games.size() : 0) + " jocs correctament");
+                    gamesState.setValue(UiState.success(games));
                 } else {
+                    Log.e(TAG, "loadGames: Error en la resposta de l'API. Codi: " + response.code());
                     gamesState.setValue(UiState.error(new Exception("Error: " + response.code())));
                 }
             }
 
             @Override
             public void onFailure(Call<GameList> call, Throwable t) {
+                Log.e(TAG, "loadGames: Error de xarxa o de petició", t);
                 gamesState.setValue(UiState.error(t));
             }
         });
