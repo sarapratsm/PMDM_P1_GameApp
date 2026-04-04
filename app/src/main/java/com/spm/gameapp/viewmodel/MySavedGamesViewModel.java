@@ -103,4 +103,26 @@ public class MySavedGamesViewModel  extends ViewModel {
             if (onComplete != null) onComplete.run();
         });
     }
+    public String generateCsvData() {
+        List<GameEntry> currentEntries = entriesState.getValue();
+        SavedGame currentGame = selectedGame.getValue();
+
+        if (currentGame == null || currentEntries == null || currentEntries.isEmpty()) {
+            return null; // Res per exportar
+        }
+
+        StringBuilder csv = new StringBuilder();
+        // Capçalera del CSV
+        csv.append("Game,Date,Comment\n");
+
+        // Dades
+        for (GameEntry entry : currentEntries) {
+            String safeComment = entry.getComment() != null ? entry.getComment().replace("\"", "\"\"") : "";
+            csv.append("\"").append(currentGame.getTitle()).append("\",")
+                    .append("\"").append(entry.getDate()).append("\",")
+                    .append("\"").append(safeComment).append("\"\n");
+        }
+
+        return csv.toString();
+    }
 }

@@ -1,7 +1,10 @@
 package com.spm.gameapp.ui.fragments;
 
+import android.content.Intent;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +14,7 @@ import android.widget.Toast;
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -19,6 +23,10 @@ import com.spm.gameapp.db.AppDatabase;
 import com.spm.gameapp.repository.GameRepository;
 import com.spm.gameapp.viewmodel.MySavedGamesViewModel;
 import com.spm.gameapp.viewmodel.ViewModelFactory;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 /**
  * Fragment amfitrió de la secció My Games.
@@ -61,8 +69,46 @@ public class MyGamesFragment extends Fragment {
 
         // 3. Configurar accions globals
         btnShare.setOnClickListener(v -> {
-            // TODO: Implementar l'exportació a Excel tal com demana l'AGENTS.md
+            String csvData = viewModel.generateCsvData();
             Toast.makeText(requireContext(), "Preparant exportació a Excel...", Toast.LENGTH_SHORT).show();
+
+            if (csvData == null) {
+                Toast.makeText(requireContext(), "No hi ha res a exportar (selecciona un joc amb entrades)", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            try {
+                // 1. Crear un fitxer temporal a la cache de l'app
+                File exportDir = new File(requireContext().getCacheDir(), "exports");
+                if (!exportDir.exists()) exportDir.mkdirs();
+
+                File file = new File(exportDir, "blog_export.csv");
+                FileWriter writer = new FileWriter(file);
+                writer.append(csvData);
+                writer.flush();
+                writer.close();
+
+                // 2. Obtenir l'Uri segura usant FileProvider
+                // ALERTA: Assegura't que "com.spm.gameapp.fileprovider" coincideix amb l'authorities del teu AndroidManifest.xml
+                Uri uri = FileProvider.getUriForFile(requireContext(), "com.spm.gameapp.fileprovider", file);
+
+                // 3. Crear i llançar l'Intent
+                Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                shareIntent.setType("text/csv");
+                shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
+                shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Exportació Blog Joc");
+                // Donem permís temporal a l'app de destí per llegir el fitxer
+                shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+                startActivity(Intent.createChooser(shareIntent, "Compartir via..."));
+
+            } catch (IOException e) {
+                Log.e("MyGamesFragment", "Error escrivint el fitxer CSV", e);
+                Toast.makeText(requireContext(), "Error en generar l'exportació", Toast.LENGTH_SHORT).show();
+            } catch (IllegalArgumentException e) {
+                Log.e("MyGamesFragment", "Error amb el FileProvider. Revisa el Manifest.", e);
+                Toast.makeText(requireContext(), "Error de configuració (FileProvider)", Toast.LENGTH_SHORT).show();
+            }
         });
         
         configOnBackPressed();
