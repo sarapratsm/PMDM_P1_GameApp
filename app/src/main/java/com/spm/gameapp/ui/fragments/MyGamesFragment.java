@@ -107,9 +107,14 @@ public class MyGamesFragment extends Fragment {
                     listContainer.setVisibility(View.GONE);
                     blogContainer.setVisibility(View.VISIBLE);
                 } else {
-                    // EN HORITZONTAL: Ja es veuen els dos, només ens assegurem
                     listContainer.setVisibility(View.VISIBLE);
-                    blogContainer.setVisibility(View.VISIBLE);
+                    //Si hi ha un joc seleccionat, es veu el blog
+                    if(viewModel.getSelectedGame() != null){
+                        blogContainer.setVisibility(View.VISIBLE);
+                    }else{
+                        blogContainer.setVisibility(View.GONE);
+                    }
+
                 }
             }
         });
