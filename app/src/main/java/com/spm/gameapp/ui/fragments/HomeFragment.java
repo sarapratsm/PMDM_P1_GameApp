@@ -41,8 +41,7 @@ public class HomeFragment extends Fragment {
 
     // Lògica de negoci i dades
     private HomeViewModel viewModel;
-    private boolean isFirstSelection = true;
-
+    private int spinnerInitCount = 0;
     /**
      * Constructor buit obligatori per a fragments.
      */
@@ -93,11 +92,7 @@ public class HomeFragment extends Fragment {
         // 5. Observar canvis en l'estat de les dades al ViewModel
         observeViewModel();
 
-        // Realitzar una càrrega inicial si l'estat actual és buit
-        if (viewModel.getGamesState().getValue() == null) {
-            Log.d(TAG, "onViewCreated: Estat buit, executant loadGames inicial");
-            viewModel.loadGames(null, null);
-        }
+        viewModel.loadGames(null, null); // Crida directa sense el 'if' inicial
 
         Log.d(TAG, "onViewCreated: Fragment preparat i observant el ViewModel.");
     }
@@ -197,11 +192,13 @@ public class HomeFragment extends Fragment {
         AdapterView.OnItemSelectedListener filterListener = new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (isFirstSelection) {
-                    Log.d(TAG, "onItemSelected: Ignorant primera selecció automàtica");
-                    isFirstSelection = false;
+                // Hi ha 2 spinners, ignorem les 2 primeres inicialitzacions automàtiques
+                if (spinnerInitCount < 2) {
+                    spinnerInitCount++;
+                    Log.d(TAG, "onItemSelected: Ignorant inicialització automàtica (" + spinnerInitCount + "/2)");
                     return;
                 }
+
                 OrderValue order = (OrderValue) spnrOrder.getSelectedItem();
                 PlatformValue platform = (PlatformValue) spnrPlatform.getSelectedItem();
 

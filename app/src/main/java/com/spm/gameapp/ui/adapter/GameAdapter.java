@@ -125,12 +125,17 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
 
         private int getPlatformIcon(String slug) {
             switch (slug) {
-                case "pc": return R.id.homeFragment; // Temporary mapping or real drawable
-                // In a real project, use real drawable resources like R.drawable.ic_windows
-                default: 
-                    // Fallback to check if drawable exists with same name as slug
-                    int resId = itemView.getContext().getResources().getIdentifier(slug, "drawable", itemView.getContext().getPackageName());
-                    return resId != 0 ? resId : 0;
+                case "pc": return R.drawable.windows;
+                case "playstation": return R.drawable.playstation;
+                case "xbox": return R.drawable.xbox;
+                case "nintendo": return R.drawable.nintendo;
+                case "ios": return R.drawable.ios;
+                case "android": return R.drawable.android;
+                case "linux": return R.drawable.linux;
+                case "mac": return R.drawable.mac;
+                default:
+                    return R.drawable.mygames;
+
             }
         }
     }
