@@ -41,5 +41,13 @@ L'aplicació segueix el patró **MVVM (Model-View-ViewModel)** per garantir un c
 6. **Correccions visuals:** Millora en la coherència de l'estat dels botons (ex. "In my collection") i en els textos de navegació.
 
 
+## Avís de disponibilitat de la API de RAWG
+**Estat del servei:** Actualment l'aplicació pot presentar errors de càrrega o temps d'espera esgotats. Aquest problema és aliè a l'aplicació i es deu a una caiguda temporal dels servidors de l'API externa de [RAWG](https://rawg.io/) d'on s'obtenen les dades.
+
+Algunes possibilitats per futures migracions son:
+- IGDB (de Twitch)
+- Steam Web API / Storefront API
+- Giant Bomb API: Otra base de datos veterana con API gratuita para uso no comercial.
+
 ---
 **Projecte finalitzat** com a part del mòdul de Programació de Dispositius Mòbils (PMDM) i Disseny d'Interfícies (DI).
