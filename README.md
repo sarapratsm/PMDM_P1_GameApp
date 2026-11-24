@@ -1,5 +1,8 @@
 # 🎮 GameApp - Projecte PMDM
 
+![CFGS DAM](https://img.shields.io/badge/CFGS-DAM-green)
+![PMDM](https://img.shields.io/badge/assignatura-PMDM-red)
+
 Una aplicació Android completa per als entusiastes dels videojocs que permet explorar el catàleg global de la API de RAWG, gestionar una col·lecció personal i mantenir un blog d'activitat per a cada joc. Aquest projecte implementa una arquitectura robusta i funcionalitats avançades de persistència i xarxa.
 
 ## 🚀 Característiques Principals
