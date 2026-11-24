@@ -53,4 +53,4 @@ Algunes possibilitats per futures migracions son:
 - Giant Bomb API: Otra base de datos veterana con API gratuita para uso no comercial.
 
 ---
-**Projecte finalitzat** com a part del mòdul de Programació de Dispositius Mòbils (PMDM) i Disseny d'Interfícies (DI).
+**Projecte finalitzat** com a part del mòdul de Programació Multimèdia i Dispositius Mòbils (PMDM) i Disseny d'Interfícies (DI).
